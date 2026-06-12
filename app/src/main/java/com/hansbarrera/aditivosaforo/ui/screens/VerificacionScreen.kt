@@ -46,7 +46,7 @@ fun VerificacionScreen(appState: AppState) {
         Spacer(modifier = Modifier.padding(top = 12.dp))
 
         SectionCard("Caudal de hormigón") {
-            NumberField("Rendimiento calculado", rendimientoCalculado, { rendimientoCalculado = it }, unit = "m3/hr")
+            NumberField("Rendimiento calculado", rendimientoCalculado, { rendimientoCalculado = it }, unit = "m3/hr", step = 0.1, decimals = 2)
             val guardadoRend = appState.rendimientoM3Hr.value
             if (guardadoRend != null) {
                 Spacer(modifier = Modifier.padding(top = 6.dp))
@@ -58,11 +58,11 @@ fun VerificacionScreen(appState: AppState) {
                 }
             }
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Rendimiento según display", rendimientoDisplay, { rendimientoDisplay = it }, unit = "m3/hr")
+            NumberField("Rendimiento según display", rendimientoDisplay, { rendimientoDisplay = it }, unit = "m3/hr", step = 0.1, decimals = 2)
         }
 
         SectionCard("Caudal de aditivo") {
-            NumberField("Caudal de aditivo calculado", aditivoCalculado, { aditivoCalculado = it }, unit = "lts/min")
+            NumberField("Caudal de aditivo calculado", aditivoCalculado, { aditivoCalculado = it }, unit = "lts/min", step = 0.1, decimals = 2)
             val guardadoAditivo = appState.caudalAditivoLtsMin.value
             if (guardadoAditivo != null) {
                 Spacer(modifier = Modifier.padding(top = 6.dp))
@@ -74,11 +74,11 @@ fun VerificacionScreen(appState: AppState) {
                 }
             }
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Aditivo según display", aditivoDisplay, { aditivoDisplay = it }, unit = "lts/min")
+            NumberField("Aditivo según display", aditivoDisplay, { aditivoDisplay = it }, unit = "lts/min", step = 0.1, decimals = 2)
         }
 
         SectionCard("Porcentaje de aditivo") {
-            NumberField("Porcentaje calculado", porcentajeCalculado, { porcentajeCalculado = it }, unit = "fracción, ej. 0.08 = 8%")
+            NumberField("Porcentaje calculado", porcentajeCalculado, { porcentajeCalculado = it }, unit = "fracción, ej. 0.08 = 8%", step = 0.005, decimals = 3)
             val guardadoPorcentaje = appState.porcentajeAditivoCalculado.value
             if (guardadoPorcentaje != null) {
                 Spacer(modifier = Modifier.padding(top = 6.dp))
@@ -90,7 +90,7 @@ fun VerificacionScreen(appState: AppState) {
                 }
             }
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Porcentaje según muestra del display", porcentajeDisplay, { porcentajeDisplay = it }, unit = "fracción")
+            NumberField("Porcentaje según muestra del display", porcentajeDisplay, { porcentajeDisplay = it }, unit = "fracción", step = 0.005, decimals = 3)
         }
 
         val resultado = remember(

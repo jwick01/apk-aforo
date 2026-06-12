@@ -46,7 +46,7 @@ fun AditivoScreen(appState: AppState) {
         Spacer(modifier = Modifier.padding(top = 12.dp))
 
         SectionCard("Datos") {
-            NumberField("Rendimiento de la bomba", rendimiento, { rendimiento = it }, unit = "m3/hr")
+            NumberField("Rendimiento de la bomba", rendimiento, { rendimiento = it }, unit = "m3/hr", step = 0.1, decimals = 2)
 
             val guardado = appState.rendimientoM3Hr.value
             if (guardado != null) {
@@ -60,11 +60,11 @@ fun AditivoScreen(appState: AppState) {
             }
 
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Dosis de cemento", dosisCemento, { dosisCemento = it }, unit = "kg/m3")
+            NumberField("Dosis de cemento", dosisCemento, { dosisCemento = it }, unit = "kg/m3", step = 5.0, decimals = 0)
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Porcentaje de aditivo", porcentajeAditivo, { porcentajeAditivo = it }, unit = "fracción, ej. 0.08 = 8%")
+            NumberField("Porcentaje de aditivo", porcentajeAditivo, { porcentajeAditivo = it }, unit = "fracción, ej. 0.08 = 8%", step = 0.005, decimals = 3)
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Densidad del aditivo", densidadAditivo, { densidadAditivo = it }, unit = "kg/lt")
+            NumberField("Densidad del aditivo", densidadAditivo, { densidadAditivo = it }, unit = "kg/lt", step = 0.05, decimals = 2)
         }
 
         val resultado = remember(rendimiento, dosisCemento, porcentajeAditivo, densidadAditivo) {

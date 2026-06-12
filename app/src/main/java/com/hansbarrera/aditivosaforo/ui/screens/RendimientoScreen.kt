@@ -94,11 +94,11 @@ private fun RendimientoPorEmboladas(appState: AppState) {
         }
 
         Spacer(modifier = Modifier.padding(top = 8.dp))
-        NumberField("Volumen cilindro", volumenCilindro, { volumenCilindro = it }, unit = "lts")
+        NumberField("Volumen cilindro", volumenCilindro, { volumenCilindro = it }, unit = "lts", step = 0.1, decimals = 2)
         Spacer(modifier = Modifier.padding(top = 8.dp))
-        NumberField("Número de émboladas", emboladas, { emboladas = it }, unit = "por minuto")
+        NumberField("Número de émboladas", emboladas, { emboladas = it }, unit = "por minuto", step = 1.0, decimals = 0)
         Spacer(modifier = Modifier.padding(top = 8.dp))
-        NumberField("Factor de llenado", factorLlenado, { factorLlenado = it })
+        NumberField("Factor de llenado", factorLlenado, { factorLlenado = it }, step = 0.01, decimals = 2)
     }
 
     val resultado = remember(volumenCilindro, emboladas, factorLlenado) {
@@ -132,9 +132,9 @@ private fun RendimientoPorTiempoLlenado(appState: AppState) {
     var volumenLlenado by rememberSaveable { mutableStateOf("0.2") }
 
     SectionCard("Datos de llenado") {
-        NumberField("Tiempo de llenado", tiempoLlenado, { tiempoLlenado = it }, unit = "seg")
+        NumberField("Tiempo de llenado", tiempoLlenado, { tiempoLlenado = it }, unit = "seg", step = 1.0, decimals = 0)
         Spacer(modifier = Modifier.padding(top = 8.dp))
-        NumberField("Volumen de llenado", volumenLlenado, { volumenLlenado = it }, unit = "m3")
+        NumberField("Volumen de llenado", volumenLlenado, { volumenLlenado = it }, unit = "m3", step = 0.01, decimals = 2)
     }
 
     val rendimiento = remember(tiempoLlenado, volumenLlenado) {

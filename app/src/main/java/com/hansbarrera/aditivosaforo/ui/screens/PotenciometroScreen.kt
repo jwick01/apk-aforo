@@ -24,6 +24,7 @@ import com.hansbarrera.aditivosaforo.calc.FilaPotenciometro
 import com.hansbarrera.aditivosaforo.calc.Formulas
 import com.hansbarrera.aditivosaforo.data.Presets
 import com.hansbarrera.aditivosaforo.ui.components.NumberField
+import com.hansbarrera.aditivosaforo.ui.components.PotenciometroCurveChart
 import com.hansbarrera.aditivosaforo.ui.components.ResultRow
 import com.hansbarrera.aditivosaforo.ui.components.SectionCard
 import com.hansbarrera.aditivosaforo.ui.components.formatNumber
@@ -52,7 +53,7 @@ fun PotenciometroScreen(appState: AppState) {
         Spacer(modifier = Modifier.padding(top = 12.dp))
 
         SectionCard("Acelerante requerido (según diseño)") {
-            NumberField("Rendimiento de la bomba", rendimiento, { rendimiento = it }, unit = "m3/hr")
+            NumberField("Rendimiento de la bomba", rendimiento, { rendimiento = it }, unit = "m3/hr", step = 0.1, decimals = 2)
             val guardado = appState.rendimientoM3Hr.value
             if (guardado != null) {
                 Spacer(modifier = Modifier.padding(top = 6.dp))
@@ -64,9 +65,9 @@ fun PotenciometroScreen(appState: AppState) {
                 }
             }
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Cantidad de cemento por m3", cementoPorM3, { cementoPorM3 = it }, unit = "kg/m3")
+            NumberField("Cantidad de cemento por m3", cementoPorM3, { cementoPorM3 = it }, unit = "kg/m3", step = 5.0, decimals = 0)
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Porcentaje de acelerante requerido", porcentajeAcelerante, { porcentajeAcelerante = it }, unit = "fracción, ej. 0.08 = 8%")
+            NumberField("Porcentaje de acelerante requerido", porcentajeAcelerante, { porcentajeAcelerante = it }, unit = "fracción, ej. 0.08 = 8%", step = 0.005, decimals = 3)
         }
 
         val aceleranteCalculado = remember(rendimiento, cementoPorM3, porcentajeAcelerante) {
@@ -113,7 +114,7 @@ fun PotenciometroScreen(appState: AppState) {
         }
 
         SectionCard("Posición interpolada") {
-            NumberField("Acelerante objetivo", objetivoManual, { objetivoManual = it }, unit = "kg/min")
+            NumberField("Acelerante objetivo", objetivoManual, { objetivoManual = it }, unit = "kg/min", step = 0.1, decimals = 2)
 
             val tabla = remember(filasPotenciometro.map { it.first.value to it.second.value }) {
                 filasPotenciometro.map { (pot, ace) ->
@@ -137,6 +138,13 @@ fun PotenciometroScreen(appState: AppState) {
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
+
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            PotenciometroCurveChart(
+                tabla = tabla,
+                objetivo = objetivoManual.toDoubleOrZero().takeIf { it > 0.0 },
+                posicion = posicion
+            )
         }
     }
 }
