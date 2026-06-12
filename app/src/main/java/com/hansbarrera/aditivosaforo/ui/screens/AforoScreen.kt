@@ -40,11 +40,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.hansbarrera.aditivosaforo.AppState
+import com.hansbarrera.aditivosaforo.R
 import com.hansbarrera.aditivosaforo.data.AforoRecord
 import com.hansbarrera.aditivosaforo.data.AforoRepository
 import com.hansbarrera.aditivosaforo.ui.components.SectionCard
@@ -86,12 +88,12 @@ fun AforoScreen(appState: AppState) {
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Text("Registro de aforo", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.title_aforo), style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.padding(top = 8.dp))
 
         TabRow(selectedTabIndex = tabIndex) {
-            Tab(selected = tabIndex == 0, onClick = { tabIndex = 0 }, text = { Text("Nuevo registro") })
-            Tab(selected = tabIndex == 1, onClick = { tabIndex = 1 }, text = { Text("Historial") })
+            Tab(selected = tabIndex == 0, onClick = { tabIndex = 0 }, text = { Text(stringResource(R.string.tab_nuevo_registro)) })
+            Tab(selected = tabIndex == 1, onClick = { tabIndex = 1 }, text = { Text(stringResource(R.string.tab_historial)) })
         }
 
         Spacer(modifier = Modifier.padding(top = 12.dp))
@@ -124,6 +126,11 @@ private fun NuevoRegistroTab(appState: AppState) {
     var fotoNotas by rememberSaveable { mutableStateOf(draft?.fotoNotas ?: emptyMap()) }
     var mensaje by rememberSaveable { mutableStateOf<String?>(null) }
     var pendingCameraFile by remember { mutableStateOf<File?>(null) }
+
+    val msgPermisoCamara = stringResource(R.string.msg_permiso_camara)
+    val msgRegistroGuardado = stringResource(R.string.msg_registro_guardado)
+    val msgGuardaAntesExportar = stringResource(R.string.msg_guarda_antes_exportar)
+    val chooserCompartirRegistro = stringResource(R.string.chooser_compartir_registro)
 
     // Restaura, al entrar a la pantalla, los datos de cálculo guardados en el borrador.
     LaunchedEffect(Unit) {
@@ -191,7 +198,7 @@ private fun NuevoRegistroTab(appState: AppState) {
             archivo?.delete()
             pendingCameraFile = null
             if (!concedido) {
-                mensaje = "Se necesita el permiso de cámara para tomar fotos."
+                mensaje = msgPermisoCamara
             }
         }
     }
@@ -219,11 +226,11 @@ private fun NuevoRegistroTab(appState: AppState) {
         }
     }
 
-    SectionCard("Datos del trabajo") {
+    SectionCard(stringResource(R.string.section_datos_trabajo)) {
         OutlinedTextField(
             value = fecha,
             onValueChange = { fecha = it },
-            label = { Text("Fecha (aaaa-mm-dd)") },
+            label = { Text(stringResource(R.string.label_fecha)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -231,7 +238,7 @@ private fun NuevoRegistroTab(appState: AppState) {
         OutlinedTextField(
             value = cliente,
             onValueChange = { cliente = it },
-            label = { Text("Cliente") },
+            label = { Text(stringResource(R.string.label_cliente)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -239,7 +246,7 @@ private fun NuevoRegistroTab(appState: AppState) {
         OutlinedTextField(
             value = proyectoOMina,
             onValueChange = { proyectoOMina = it },
-            label = { Text("Proyecto o mina") },
+            label = { Text(stringResource(R.string.label_proyecto_mina)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -247,7 +254,7 @@ private fun NuevoRegistroTab(appState: AppState) {
         OutlinedTextField(
             value = lugarAforo,
             onValueChange = { lugarAforo = it },
-            label = { Text("Lugar del aforo") },
+            label = { Text(stringResource(R.string.label_lugar_aforo)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -255,7 +262,7 @@ private fun NuevoRegistroTab(appState: AppState) {
         OutlinedTextField(
             value = operador,
             onValueChange = { operador = it },
-            label = { Text("Operador") },
+            label = { Text(stringResource(R.string.label_operador)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -263,7 +270,7 @@ private fun NuevoRegistroTab(appState: AppState) {
         OutlinedTextField(
             value = numeroEquipo,
             onValueChange = { numeroEquipo = it },
-            label = { Text("Número de equipo") },
+            label = { Text(stringResource(R.string.label_numero_equipo)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -271,7 +278,7 @@ private fun NuevoRegistroTab(appState: AppState) {
         OutlinedTextField(
             value = odometro,
             onValueChange = { odometro = it },
-            label = { Text("Odómetro") },
+            label = { Text(stringResource(R.string.label_odometro)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -279,17 +286,16 @@ private fun NuevoRegistroTab(appState: AppState) {
         OutlinedTextField(
             value = observaciones,
             onValueChange = { observaciones = it },
-            label = { Text("Observaciones") },
+            label = { Text(stringResource(R.string.label_observaciones)) },
             modifier = Modifier.fillMaxWidth()
         )
     }
 
-    SectionCard("Resultados guardados") {
+    SectionCard(stringResource(R.string.section_resultados_guardados)) {
         val datos = appState.datosInforme.value
         if (datos.isEmpty()) {
             Text(
-                "Aún no hay datos guardados. Usa los botones \"Usar este resultado...\" o " +
-                    "\"Guardar estos datos...\" en las otras pestañas para traerlos aquí.",
+                stringResource(R.string.msg_no_datos_guardados),
                 style = MaterialTheme.typography.bodyMedium
             )
         } else {
@@ -297,7 +303,7 @@ private fun NuevoRegistroTab(appState: AppState) {
         }
     }
 
-    SectionCard("Fotografías") {
+    SectionCard(stringResource(R.string.section_fotografias)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -306,7 +312,7 @@ private fun NuevoRegistroTab(appState: AppState) {
                 onClick = { tomarFoto() },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Tomar foto")
+                Text(stringResource(R.string.btn_tomar_foto))
             }
             OutlinedButton(
                 onClick = {
@@ -316,13 +322,13 @@ private fun NuevoRegistroTab(appState: AppState) {
                 },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Cargar imagen")
+                Text(stringResource(R.string.btn_cargar_imagen))
             }
         }
 
         if (fotos.isNotEmpty()) {
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            Text("Fotos (${fotos.size}):", style = MaterialTheme.typography.labelLarge)
+            Text(stringResource(R.string.label_fotos_count, fotos.size), style = MaterialTheme.typography.labelLarge)
             fotos.forEach { nombre ->
                 Row(
                     modifier = Modifier
@@ -341,13 +347,13 @@ private fun NuevoRegistroTab(appState: AppState) {
                         fotos = fotos - nombre
                         fotoNotas = fotoNotas - nombre
                     }) {
-                        Text("Quitar")
+                        Text(stringResource(R.string.btn_quitar))
                     }
                 }
                 OutlinedTextField(
                     value = fotoNotas[nombre] ?: "",
                     onValueChange = { fotoNotas = fotoNotas + (nombre to it) },
-                    label = { Text("Nota / pie de foto") },
+                    label = { Text(stringResource(R.string.label_nota_foto)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 4.dp, bottom = 4.dp)
@@ -356,9 +362,9 @@ private fun NuevoRegistroTab(appState: AppState) {
         }
     }
 
-    SectionCard("Guardar y exportar") {
+    SectionCard(stringResource(R.string.section_guardar_exportar)) {
         recordId?.let { id ->
-            Text("ID del registro: $id", style = MaterialTheme.typography.labelLarge)
+            Text(stringResource(R.string.label_id_registro, id), style = MaterialTheme.typography.labelLarge)
             Spacer(modifier = Modifier.padding(top = 8.dp))
         }
 
@@ -383,11 +389,11 @@ private fun NuevoRegistroTab(appState: AppState) {
                 )
                 appState.limpiarDatosInforme()
                 repository.clearDraft()
-                mensaje = "Registro guardado: $id"
+                mensaje = String.format(msgRegistroGuardado, id)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Guardar registro")
+            Text(stringResource(R.string.btn_guardar_registro))
         }
 
         Spacer(modifier = Modifier.padding(top = 8.dp))
@@ -395,7 +401,7 @@ private fun NuevoRegistroTab(appState: AppState) {
             onClick = {
                 val id = recordId
                 if (id == null) {
-                    mensaje = "Guarda el registro antes de exportarlo."
+                    mensaje = msgGuardaAntesExportar
                 } else {
                     val zip = repository.exportZip(id)
                     val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", zip)
@@ -404,12 +410,12 @@ private fun NuevoRegistroTab(appState: AppState) {
                         putExtra(Intent.EXTRA_STREAM, uri)
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }
-                    context.startActivity(Intent.createChooser(intent, "Compartir registro de aforo"))
+                    context.startActivity(Intent.createChooser(intent, chooserCompartirRegistro))
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Exportar y compartir")
+            Text(stringResource(R.string.btn_exportar_compartir))
         }
 
         Spacer(modifier = Modifier.padding(top = 8.dp))
@@ -432,7 +438,7 @@ private fun NuevoRegistroTab(appState: AppState) {
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Limpiar formulario (nuevo registro)")
+            Text(stringResource(R.string.btn_limpiar_formulario))
         }
 
         mensaje?.let {
@@ -447,10 +453,11 @@ private fun HistorialTab() {
     val context = LocalContext.current
     val repository = remember { AforoRepository(context) }
     var registros by remember { mutableStateOf(repository.loadAll()) }
+    val chooserCompartirRegistro = stringResource(R.string.chooser_compartir_registro)
 
     if (registros.isEmpty()) {
         Text(
-            "Aún no hay registros guardados. Crea uno en la pestaña \"Nuevo registro\".",
+            stringResource(R.string.msg_no_registros),
             style = MaterialTheme.typography.bodyMedium
         )
         return
@@ -458,26 +465,26 @@ private fun HistorialTab() {
 
     registros.forEach { record ->
         SectionCard(record.id) {
-            Text("Fecha: ${record.fecha}")
-            Text("Cliente: ${record.cliente}")
-            Text("Proyecto o mina: ${record.proyectoOMina}")
-            Text("Lugar del aforo: ${record.lugarAforo}")
-            Text("Operador: ${record.operador}")
-            Text("Número de equipo: ${record.numeroEquipo}")
-            Text("Odómetro: ${record.odometro}")
+            Text(stringResource(R.string.historial_fecha, record.fecha))
+            Text(stringResource(R.string.historial_cliente, record.cliente))
+            Text(stringResource(R.string.historial_proyecto, record.proyectoOMina))
+            Text(stringResource(R.string.historial_lugar, record.lugarAforo))
+            Text(stringResource(R.string.historial_operador, record.operador))
+            Text(stringResource(R.string.historial_equipo, record.numeroEquipo))
+            Text(stringResource(R.string.historial_odometro, record.odometro))
             if (record.observaciones.isNotBlank()) {
-                Text("Observaciones: ${record.observaciones}")
+                Text(stringResource(R.string.historial_observaciones, record.observaciones))
             }
 
             if (record.resultados.isNotEmpty()) {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-                Text("Resultados:", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.historial_resultados), style = MaterialTheme.typography.labelLarge)
                 ResultadosAgrupados(record.resultados)
             }
 
             if (record.fotos.isNotEmpty()) {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-                Text("${record.fotos.size} foto(s)", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.historial_fotos_count, record.fotos.size), style = MaterialTheme.typography.labelLarge)
                 Spacer(modifier = Modifier.padding(top = 4.dp))
                 record.fotos.forEach { nombre ->
                     Row(
@@ -509,11 +516,11 @@ private fun HistorialTab() {
                             putExtra(Intent.EXTRA_STREAM, uri)
                             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                         }
-                        context.startActivity(Intent.createChooser(intent, "Compartir registro de aforo"))
+                        context.startActivity(Intent.createChooser(intent, chooserCompartirRegistro))
                     },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Exportar")
+                    Text(stringResource(R.string.btn_exportar))
                 }
                 OutlinedButton(
                     onClick = {
@@ -522,7 +529,7 @@ private fun HistorialTab() {
                     },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Eliminar")
+                    Text(stringResource(R.string.btn_eliminar))
                 }
             }
         }

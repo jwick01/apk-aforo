@@ -19,8 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.hansbarrera.aditivosaforo.AppState
+import com.hansbarrera.aditivosaforo.R
 import com.hansbarrera.aditivosaforo.calc.FilaPotenciometro
 import com.hansbarrera.aditivosaforo.calc.Formulas
 import com.hansbarrera.aditivosaforo.data.Presets
@@ -50,11 +52,11 @@ fun PotenciometroScreen(appState: AppState) {
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Text("Posición del potenciómetro", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.title_potenciometro), style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.padding(top = 12.dp))
 
-        SectionCard("Acelerante requerido (según diseño)") {
-            NumberField("Rendimiento de la bomba", rendimiento, { rendimiento = it }, unit = "m3/hr", step = 0.1, decimals = 2)
+        SectionCard(stringResource(R.string.section_acelerante_requerido)) {
+            NumberField(stringResource(R.string.rendimiento_bomba_label), rendimiento, { rendimiento = it }, unit = "m3/hr", step = 0.1, decimals = 2)
             val guardado = appState.rendimientoM3Hr.value
             if (guardado != null) {
                 Spacer(modifier = Modifier.padding(top = 6.dp))
@@ -62,13 +64,13 @@ fun PotenciometroScreen(appState: AppState) {
                     onClick = { rendimiento = formatNumber(guardado, 6) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Usar rendimiento guardado (${formatNumber(guardado)} m3/hr)")
+                    Text(stringResource(R.string.usar_rendimiento_guardado, formatNumber(guardado)))
                 }
             }
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Cantidad de cemento por m3", cementoPorM3, { cementoPorM3 = it }, unit = "kg/m3", step = 5.0, decimals = 0)
+            NumberField(stringResource(R.string.label_cemento_por_m3), cementoPorM3, { cementoPorM3 = it }, unit = "kg/m3", step = 5.0, decimals = 0)
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Porcentaje de acelerante requerido", porcentajeAcelerante, { porcentajeAcelerante = it }, unit = "fracción, ej. 0.08 = 8%", step = 0.005, decimals = 3)
+            NumberField(stringResource(R.string.label_porcentaje_acelerante_requerido), porcentajeAcelerante, { porcentajeAcelerante = it }, unit = stringResource(R.string.unit_fraccion_008), step = 0.005, decimals = 3)
         }
 
         val aceleranteCalculado = remember(rendimiento, cementoPorM3, porcentajeAcelerante) {
@@ -89,8 +91,8 @@ fun PotenciometroScreen(appState: AppState) {
             ))
         }
 
-        SectionCard("Resultado") {
-            ResultRow("Acelerante requerido", aceleranteCalculado, "kg/min")
+        SectionCard(stringResource(R.string.result_title)) {
+            ResultRow(stringResource(R.string.result_acelerante_requerido), aceleranteCalculado, "kg/min")
             Spacer(modifier = Modifier.padding(top = 8.dp))
             OutlinedButton(
                 onClick = {
@@ -103,20 +105,20 @@ fun PotenciometroScreen(appState: AppState) {
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Usar este valor como objetivo del potenciómetro")
+                Text(stringResource(R.string.btn_usar_objetivo_potenciometro))
             }
         }
 
-        SectionCard("Tabla de calibración del potenciómetro") {
+        SectionCard(stringResource(R.string.section_tabla_calibracion)) {
             Text(
-                "Edita los valores reales medidos en el equipo (potenciómetro vs. acelerante en kg/min).",
+                stringResource(R.string.desc_tabla_calibracion),
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.padding(top = 8.dp))
 
             Row(modifier = Modifier.fillMaxWidth()) {
-                Text("Potenciómetro", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
-                Text("Acelerante (kg/min)", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.header_potenciometro), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.header_acelerante_kgmin), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
             }
             Spacer(modifier = Modifier.padding(top = 4.dp))
 
@@ -131,8 +133,8 @@ fun PotenciometroScreen(appState: AppState) {
             }
         }
 
-        SectionCard("Posición interpolada") {
-            NumberField("Acelerante objetivo", objetivoManual, { objetivoManual = it }, unit = "kg/min", step = 0.1, decimals = 2)
+        SectionCard(stringResource(R.string.section_posicion_interpolada)) {
+            NumberField(stringResource(R.string.label_acelerante_objetivo), objetivoManual, { objetivoManual = it }, unit = "kg/min", step = 0.1, decimals = 2)
 
             val tabla = remember(filasPotenciometro.map { it.first.value to it.second.value }) {
                 filasPotenciometro.map { (pot, ace) ->
@@ -168,7 +170,7 @@ fun PotenciometroScreen(appState: AppState) {
 
             Spacer(modifier = Modifier.padding(top = 8.dp))
             if (posicion != null) {
-                ResultRow("Posición del potenciómetro", posicion, "", decimals = 1)
+                ResultRow(stringResource(R.string.posicion_potenciometro_label), posicion, "", decimals = 1)
                 Spacer(modifier = Modifier.padding(top = 8.dp))
                 OutlinedButton(
                     onClick = {
@@ -180,11 +182,11 @@ fun PotenciometroScreen(appState: AppState) {
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Usar esta posición en el registro de aforo")
+                    Text(stringResource(R.string.btn_usar_posicion_aforo))
                 }
             } else {
                 Text(
-                    "Ingresa al menos dos filas de la tabla con valores de acelerante distintos.",
+                    stringResource(R.string.msg_min_dos_filas),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

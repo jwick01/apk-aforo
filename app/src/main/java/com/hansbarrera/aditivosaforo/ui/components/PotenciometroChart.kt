@@ -15,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.hansbarrera.aditivosaforo.R
 import com.hansbarrera.aditivosaforo.calc.FilaPotenciometro
 
 private const val ALTO_GRAFICO_DP = 200
@@ -38,7 +40,7 @@ fun PotenciometroCurveChart(
 
     if (puntos.size < 2) {
         Text(
-            "Agrega al menos dos filas con valores distintos en la tabla para ver la curva.",
+            stringResource(R.string.chart_min_two_rows),
             style = MaterialTheme.typography.bodyMedium,
             modifier = modifier.padding(vertical = 8.dp)
         )
@@ -56,7 +58,7 @@ fun PotenciometroCurveChart(
 
     Column(modifier = modifier) {
         Text(
-            "Eje Y: Acelerante (kg/min)  ·  Eje X: Posición del potenciómetro",
+            stringResource(R.string.chart_axis_labels),
             style = MaterialTheme.typography.labelMedium
         )
         Spacer(modifier = Modifier.padding(top = 4.dp))
@@ -134,7 +136,7 @@ fun PotenciometroCurveChart(
         if (objetivo != null && posicion != null) {
             Spacer(modifier = Modifier.padding(top = 4.dp))
             Text(
-                "● Objetivo: posición ${formatNumber(posicion, 2)} para ${formatNumber(objetivo, 2)} kg/min",
+                stringResource(R.string.chart_objetivo, formatNumber(posicion, 2), formatNumber(objetivo, 2)),
                 style = MaterialTheme.typography.labelSmall,
                 color = targetColor
             )

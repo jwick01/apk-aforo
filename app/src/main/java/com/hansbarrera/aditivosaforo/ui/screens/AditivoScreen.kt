@@ -20,8 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.hansbarrera.aditivosaforo.AppState
+import com.hansbarrera.aditivosaforo.R
 import com.hansbarrera.aditivosaforo.calc.Formulas
 import com.hansbarrera.aditivosaforo.data.Presets
 import com.hansbarrera.aditivosaforo.ui.components.NumberField
@@ -43,11 +45,11 @@ fun AditivoScreen(appState: AppState) {
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Text("Dosis de aditivo / acelerante", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.title_aditivo), style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.padding(top = 12.dp))
 
-        SectionCard("Datos") {
-            NumberField("Rendimiento de la bomba", rendimiento, { rendimiento = it }, unit = "m3/hr", step = 0.1, decimals = 2)
+        SectionCard(stringResource(R.string.section_datos)) {
+            NumberField(stringResource(R.string.rendimiento_bomba_label), rendimiento, { rendimiento = it }, unit = "m3/hr", step = 0.1, decimals = 2)
 
             val guardado = appState.rendimientoM3Hr.value
             if (guardado != null) {
@@ -56,16 +58,16 @@ fun AditivoScreen(appState: AppState) {
                     onClick = { rendimiento = formatNumber(guardado, 6) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Usar rendimiento guardado (${formatNumber(guardado)} m3/hr)")
+                    Text(stringResource(R.string.usar_rendimiento_guardado, formatNumber(guardado)))
                 }
             }
 
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Dosis de cemento", dosisCemento, { dosisCemento = it }, unit = "kg/m3", step = 5.0, decimals = 0)
+            NumberField(stringResource(R.string.label_dosis_cemento), dosisCemento, { dosisCemento = it }, unit = "kg/m3", step = 5.0, decimals = 0)
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Porcentaje de aditivo", porcentajeAditivo, { porcentajeAditivo = it }, unit = "fracción, ej. 0.08 = 8%", step = 0.005, decimals = 3)
+            NumberField(stringResource(R.string.porcentaje_aditivo_label), porcentajeAditivo, { porcentajeAditivo = it }, unit = stringResource(R.string.unit_fraccion_008), step = 0.005, decimals = 3)
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Densidad del aditivo", densidadAditivo, { densidadAditivo = it }, unit = "kg/lt", step = 0.05, decimals = 2)
+            NumberField(stringResource(R.string.label_densidad_aditivo), densidadAditivo, { densidadAditivo = it }, unit = "kg/lt", step = 0.05, decimals = 2)
         }
 
         val resultado = remember(rendimiento, dosisCemento, porcentajeAditivo, densidadAditivo) {
@@ -89,10 +91,10 @@ fun AditivoScreen(appState: AppState) {
             ))
         }
 
-        SectionCard("Resultado") {
-            ResultRow("Kilos de aditivo requerido", resultado.kilosAditivoKgMin, "kg/min")
+        SectionCard(stringResource(R.string.result_title)) {
+            ResultRow(stringResource(R.string.result_kilos_aditivo), resultado.kilosAditivoKgMin, "kg/min")
             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-            ResultRow("Litros de aditivo", resultado.litrosAditivoLtsMin, "lts/min")
+            ResultRow(stringResource(R.string.result_litros_aditivo), resultado.litrosAditivoLtsMin, "lts/min")
 
             Spacer(modifier = Modifier.padding(top = 8.dp))
             Button(
@@ -109,7 +111,7 @@ fun AditivoScreen(appState: AppState) {
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Usar estos resultados en Verificación")
+                Text(stringResource(R.string.btn_usar_resultados_verificacion))
             }
         }
     }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,15 +28,15 @@ import com.hansbarrera.aditivosaforo.ui.screens.RendimientoScreen
 import com.hansbarrera.aditivosaforo.ui.screens.VerificacionScreen
 import com.hansbarrera.aditivosaforo.ui.theme.AditivosAforoTheme
 
-private data class Destino(val ruta: String, val etiqueta: String, val emoji: String)
+private data class Destino(val ruta: String, val etiqueta: Int, val emoji: String)
 
 private val destinos = listOf(
-    Destino("rendimiento", "Rendimiento", "⚙"),
-    Destino("aditivo", "Aditivo", "🧪"),
-    Destino("verificacion", "Verificación", "📊"),
-    Destino("potenciometro", "Potenciómetro", "🎛"),
-    Destino("aforo", "Aforo", "📋"),
-    Destino("acerca", "Acerca de", "ℹ")
+    Destino("rendimiento", R.string.nav_rendimiento, "⚙"),
+    Destino("aditivo", R.string.nav_aditivo, "🧪"),
+    Destino("verificacion", R.string.nav_verificacion, "📊"),
+    Destino("potenciometro", R.string.nav_potenciometro, "🎛"),
+    Destino("aforo", R.string.nav_aforo, "📋"),
+    Destino("acerca", R.string.nav_acerca, "ℹ")
 )
 
 class MainActivity : ComponentActivity() {
@@ -83,7 +84,7 @@ private fun AppNavigation(appState: AppState) {
                             }
                         },
                         icon = { Text(destino.emoji) },
-                        label = { Text(destino.etiqueta) }
+                        label = { Text(stringResource(destino.etiqueta)) }
                     )
                 }
             }

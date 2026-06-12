@@ -25,8 +25,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.hansbarrera.aditivosaforo.AppState
+import com.hansbarrera.aditivosaforo.R
 import com.hansbarrera.aditivosaforo.calc.Formulas
 import com.hansbarrera.aditivosaforo.data.Presets
 import com.hansbarrera.aditivosaforo.ui.components.NumberField
@@ -45,12 +47,12 @@ fun RendimientoScreen(appState: AppState) {
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Text("Rendimiento de la bomba", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.title_rendimiento), style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.padding(top = 8.dp))
 
         TabRow(selectedTabIndex = tabIndex) {
-            Tab(selected = tabIndex == 0, onClick = { tabIndex = 0 }, text = { Text("Por émboladas") })
-            Tab(selected = tabIndex == 1, onClick = { tabIndex = 1 }, text = { Text("Por tiempo de llenado") })
+            Tab(selected = tabIndex == 0, onClick = { tabIndex = 0 }, text = { Text(stringResource(R.string.tab_por_emboladas)) })
+            Tab(selected = tabIndex == 1, onClick = { tabIndex = 1 }, text = { Text(stringResource(R.string.tab_por_tiempo_llenado)) })
         }
 
         Spacer(modifier = Modifier.padding(top = 12.dp))
@@ -71,8 +73,8 @@ private fun RendimientoPorEmboladas(appState: AppState) {
     var emboladas by rememberSaveable { mutableStateOf("12") }
     var factorLlenado by rememberSaveable { mutableStateOf(Presets.FACTOR_LLENADO_DEFAULT.toString()) }
 
-    SectionCard("Datos de la bomba") {
-        Text("Tipo de bomba", style = MaterialTheme.typography.labelLarge)
+    SectionCard(stringResource(R.string.section_datos_bomba)) {
+        Text(stringResource(R.string.label_tipo_bomba), style = MaterialTheme.typography.labelLarge)
         Spacer(modifier = Modifier.padding(top = 4.dp))
         Row(
             modifier = Modifier
@@ -95,11 +97,11 @@ private fun RendimientoPorEmboladas(appState: AppState) {
         }
 
         Spacer(modifier = Modifier.padding(top = 8.dp))
-        NumberField("Volumen cilindro", volumenCilindro, { volumenCilindro = it }, unit = "lts", step = 0.1, decimals = 2)
+        NumberField(stringResource(R.string.label_volumen_cilindro), volumenCilindro, { volumenCilindro = it }, unit = "lts", step = 0.1, decimals = 2)
         Spacer(modifier = Modifier.padding(top = 8.dp))
-        NumberField("Número de émboladas", emboladas, { emboladas = it }, unit = "por minuto", step = 1.0, decimals = 0)
+        NumberField(stringResource(R.string.label_numero_emboladas), emboladas, { emboladas = it }, unit = stringResource(R.string.unit_por_minuto), step = 1.0, decimals = 0)
         Spacer(modifier = Modifier.padding(top = 8.dp))
-        NumberField("Factor de llenado", factorLlenado, { factorLlenado = it }, step = 0.01, decimals = 2)
+        NumberField(stringResource(R.string.label_factor_llenado), factorLlenado, { factorLlenado = it }, step = 0.01, decimals = 2)
     }
 
     val resultado = remember(volumenCilindro, emboladas, factorLlenado) {
@@ -122,16 +124,16 @@ private fun RendimientoPorEmboladas(appState: AppState) {
         ))
     }
 
-    SectionCard("Resultado") {
+    SectionCard(stringResource(R.string.result_title)) {
         Text(
-            "Equipo seleccionado: ${Presets.bombas[presetIndex].nombre}",
+            stringResource(R.string.result_equipo_seleccionado, Presets.bombas[presetIndex].nombre),
             style = MaterialTheme.typography.bodyMedium
         )
         Spacer(modifier = Modifier.padding(top = 4.dp))
-        ResultRow("Volumen cilindro efectivo", resultado.volumenEfectivoLtsMin, "lts/min")
-        ResultRow("Volumen cilindro efectivo", resultado.volumenEfectivoLtsHr, "lts/hr")
+        ResultRow(stringResource(R.string.result_volumen_cilindro_efectivo), resultado.volumenEfectivoLtsMin, "lts/min")
+        ResultRow(stringResource(R.string.result_volumen_cilindro_efectivo), resultado.volumenEfectivoLtsHr, "lts/hr")
         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-        ResultRow("Rendimiento", resultado.rendimientoM3Hr, "m3/hr")
+        ResultRow(stringResource(R.string.result_rendimiento), resultado.rendimientoM3Hr, "m3/hr")
 
         Spacer(modifier = Modifier.padding(top = 8.dp))
         Button(
@@ -147,7 +149,7 @@ private fun RendimientoPorEmboladas(appState: AppState) {
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Usar este rendimiento en las otras calculadoras")
+            Text(stringResource(R.string.usar_rendimiento_otras))
         }
         GuardadoIndicator(appState)
     }
@@ -158,10 +160,10 @@ private fun RendimientoPorTiempoLlenado(appState: AppState) {
     var tiempoLlenado by rememberSaveable { mutableStateOf("80") }
     var volumenLlenado by rememberSaveable { mutableStateOf("0.2") }
 
-    SectionCard("Datos de llenado") {
-        NumberField("Tiempo de llenado", tiempoLlenado, { tiempoLlenado = it }, unit = "seg", step = 1.0, decimals = 0)
+    SectionCard(stringResource(R.string.section_datos_llenado)) {
+        NumberField(stringResource(R.string.label_tiempo_llenado), tiempoLlenado, { tiempoLlenado = it }, unit = "seg", step = 1.0, decimals = 0)
         Spacer(modifier = Modifier.padding(top = 8.dp))
-        NumberField("Volumen de llenado", volumenLlenado, { volumenLlenado = it }, unit = "m3", step = 0.01, decimals = 2)
+        NumberField(stringResource(R.string.label_volumen_llenado), volumenLlenado, { volumenLlenado = it }, unit = "m3", step = 0.01, decimals = 2)
     }
 
     val rendimiento = remember(tiempoLlenado, volumenLlenado) {
@@ -181,8 +183,8 @@ private fun RendimientoPorTiempoLlenado(appState: AppState) {
         ))
     }
 
-    SectionCard("Resultado") {
-        ResultRow("Rendimiento", rendimiento, "m3/hr")
+    SectionCard(stringResource(R.string.result_title)) {
+        ResultRow(stringResource(R.string.result_rendimiento), rendimiento, "m3/hr")
 
         Spacer(modifier = Modifier.padding(top = 8.dp))
         Button(
@@ -196,7 +198,7 @@ private fun RendimientoPorTiempoLlenado(appState: AppState) {
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Usar este rendimiento en las otras calculadoras")
+            Text(stringResource(R.string.usar_rendimiento_otras))
         }
         GuardadoIndicator(appState)
     }
@@ -207,7 +209,7 @@ private fun GuardadoIndicator(appState: AppState) {
     val valor = appState.rendimientoM3Hr.value
     if (valor != null) {
         Text(
-            "Rendimiento guardado: ${formatNumber(valor)} m3/hr",
+            stringResource(R.string.guardado_rendimiento, formatNumber(valor)),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(top = 4.dp)
         )

@@ -1,0 +1,139 @@
+<resources>
+    <!-- Navigation -->
+    <string name="nav_rendimiento">Flow Rate</string>
+    <string name="nav_aditivo">Additive</string>
+    <string name="nav_verificacion">Verification</string>
+    <string name="nav_potenciometro">Potentiometer</string>
+    <string name="nav_aforo">Survey</string>
+    <string name="nav_acerca">About</string>
+
+    <!-- Common -->
+    <string name="result_title">Result</string>
+    <string name="rendimiento_bomba_label">Pump flow rate</string>
+    <string name="usar_rendimiento_guardado">Use saved flow rate (%1$s m3/hr)</string>
+    <string name="porcentaje_aditivo_label">Additive percentage</string>
+    <string name="unit_fraccion_008">fraction, e.g. 0.08 = 8%</string>
+    <string name="posicion_potenciometro_label">Potentiometer position</string>
+    <string name="usar_rendimiento_otras">Use this flow rate in the other calculators</string>
+
+    <!-- Flow rate -->
+    <string name="title_rendimiento">Pump flow rate</string>
+    <string name="tab_por_emboladas">By strokes</string>
+    <string name="tab_por_tiempo_llenado">By fill time</string>
+    <string name="section_datos_bomba">Pump data</string>
+    <string name="label_tipo_bomba">Pump type</string>
+    <string name="label_volumen_cilindro">Cylinder volume</string>
+    <string name="label_numero_emboladas">Number of strokes</string>
+    <string name="unit_por_minuto">per minute</string>
+    <string name="label_factor_llenado">Filling factor</string>
+    <string name="result_equipo_seleccionado">Selected equipment: %1$s</string>
+    <string name="result_volumen_cilindro_efectivo">Effective cylinder volume</string>
+    <string name="result_rendimiento">Flow rate</string>
+    <string name="guardado_rendimiento">Saved flow rate: %1$s m3/hr</string>
+    <string name="section_datos_llenado">Fill data</string>
+    <string name="label_tiempo_llenado">Fill time</string>
+    <string name="label_volumen_llenado">Fill volume</string>
+
+    <!-- Additive -->
+    <string name="title_aditivo">Additive / accelerator dosage</string>
+    <string name="section_datos">Data</string>
+    <string name="label_dosis_cemento">Cement dosage</string>
+    <string name="label_densidad_aditivo">Additive density</string>
+    <string name="result_kilos_aditivo">Required additive (kg)</string>
+    <string name="result_litros_aditivo">Additive volume</string>
+    <string name="btn_usar_resultados_verificacion">Use these results in Verification</string>
+
+    <!-- Verification -->
+    <string name="title_verificacion">Verification against display</string>
+    <string name="section_caudal_hormigon">Concrete flow</string>
+    <string name="label_rendimiento_calculado">Calculated flow rate</string>
+    <string name="btn_usar_valor_guardado_m3hr">Use saved value (%1$s m3/hr)</string>
+    <string name="label_rendimiento_display">Flow rate per display</string>
+    <string name="section_caudal_aditivo">Additive flow</string>
+    <string name="label_caudal_aditivo_calculado">Calculated additive flow</string>
+    <string name="btn_usar_valor_guardado_ltsmin">Use saved value (%1$s lts/min)</string>
+    <string name="label_aditivo_display">Additive per display</string>
+    <string name="label_porcentaje_calculado">Calculated percentage</string>
+    <string name="btn_usar_valor_guardado">Use saved value (%1$s)</string>
+    <string name="unit_fraccion">fraction</string>
+    <string name="label_porcentaje_display">Percentage per display sample</string>
+    <string name="section_desviaciones">Deviations</string>
+    <string name="btn_guardar_datos_aforo">Save this data to the survey record</string>
+
+    <!-- Potentiometer -->
+    <string name="title_potenciometro">Potentiometer position</string>
+    <string name="section_acelerante_requerido">Required accelerator (per design)</string>
+    <string name="label_cemento_por_m3">Cement amount per m3</string>
+    <string name="label_porcentaje_acelerante_requerido">Required accelerator percentage</string>
+    <string name="result_acelerante_requerido">Required accelerator</string>
+    <string name="btn_usar_objetivo_potenciometro">Use this value as the potentiometer target</string>
+    <string name="section_tabla_calibracion">Potentiometer calibration table</string>
+    <string name="desc_tabla_calibracion">Edit the actual values measured on the equipment (potentiometer vs. accelerator in kg/min).</string>
+    <string name="header_potenciometro">Potentiometer</string>
+    <string name="header_acelerante_kgmin">Accelerator (kg/min)</string>
+    <string name="section_posicion_interpolada">Interpolated position</string>
+    <string name="label_acelerante_objetivo">Target accelerator</string>
+    <string name="btn_usar_posicion_aforo">Use this position in the survey record</string>
+    <string name="msg_min_dos_filas">Enter at least two table rows with different accelerator values.</string>
+
+    <!-- Survey -->
+    <string name="title_aforo">Survey record</string>
+    <string name="tab_nuevo_registro">New record</string>
+    <string name="tab_historial">History</string>
+    <string name="section_datos_trabajo">Job data</string>
+    <string name="label_fecha">Date (yyyy-mm-dd)</string>
+    <string name="label_cliente">Client</string>
+    <string name="label_proyecto_mina">Project or mine</string>
+    <string name="label_lugar_aforo">Survey location</string>
+    <string name="label_operador">Operator</string>
+    <string name="label_numero_equipo">Equipment number</string>
+    <string name="label_odometro">Odometer</string>
+    <string name="label_observaciones">Remarks</string>
+    <string name="section_resultados_guardados">Saved results</string>
+    <string name="msg_no_datos_guardados">No saved data yet. Use the "Use this result..." or "Save this data..." buttons on the other tabs to bring them here.</string>
+    <string name="section_fotografias">Photos</string>
+    <string name="btn_tomar_foto">Take photo</string>
+    <string name="btn_cargar_imagen">Load image</string>
+    <string name="label_fotos_count">Photos (%1$d):</string>
+    <string name="btn_quitar">Remove</string>
+    <string name="label_nota_foto">Note / caption</string>
+    <string name="section_guardar_exportar">Save and export</string>
+    <string name="label_id_registro">Record ID: %1$s</string>
+    <string name="btn_guardar_registro">Save record</string>
+    <string name="msg_registro_guardado">Record saved: %1$s</string>
+    <string name="msg_guarda_antes_exportar">Save the record before exporting it.</string>
+    <string name="chooser_compartir_registro">Share survey record</string>
+    <string name="btn_exportar_compartir">Export and share</string>
+    <string name="btn_limpiar_formulario">Clear form (new record)</string>
+    <string name="msg_permiso_camara">Camera permission is needed to take photos.</string>
+    <string name="msg_no_registros">No saved records yet. Create one in the "New record" tab.</string>
+    <string name="historial_fecha">Date: %1$s</string>
+    <string name="historial_cliente">Client: %1$s</string>
+    <string name="historial_proyecto">Project or mine: %1$s</string>
+    <string name="historial_lugar">Survey location: %1$s</string>
+    <string name="historial_operador">Operator: %1$s</string>
+    <string name="historial_equipo">Equipment number: %1$s</string>
+    <string name="historial_odometro">Odometer: %1$s</string>
+    <string name="historial_observaciones">Remarks: %1$s</string>
+    <string name="historial_resultados">Results:</string>
+    <string name="historial_fotos_count">%1$d photo(s)</string>
+    <string name="btn_exportar">Export</string>
+    <string name="btn_eliminar">Delete</string>
+
+    <!-- About -->
+    <string name="section_apariencia">Appearance</string>
+    <string name="desc_apariencia">Choose the app theme. "Dark" is useful for low-light work, for example inside tunnels.</string>
+    <string name="chip_seguir_sistema">Follow system</string>
+    <string name="chip_claro">Light</string>
+    <string name="chip_oscuro">Dark</string>
+    <string name="label_version">Version %1$s</string>
+    <string name="desc_app">Field calculator for shotcrete operations: pump flow rate, additive/accelerator dosage, verification against the display, dosing pump potentiometer position, and survey records with photos.</string>
+    <string name="credit_hecho_por">Made by Hans Barrera</string>
+    <string name="section_privacidad">Privacy and security</string>
+    <string name="desc_privacidad">• The app works 100% offline: it does not require or request Internet permission.\n• It does not include ads, trackers, or third-party libraries beyond the official Android ones.\n• It does not send, receive, or store data outside this device.\n• The camera permission is used only to take photos for the survey record; photos are stored locally and only shared if you explicitly do so with the "Export and share" option.\n• The full source code is available for review.</string>
+
+    <!-- Potentiometer chart -->
+    <string name="chart_min_two_rows">Add at least two rows with different values in the table to see the curve.</string>
+    <string name="chart_axis_labels">Y axis: Accelerator (kg/min)  ·  X axis: Potentiometer position</string>
+    <string name="chart_objetivo">● Target: position %1$s for %2$s kg/min</string>
+</resources>

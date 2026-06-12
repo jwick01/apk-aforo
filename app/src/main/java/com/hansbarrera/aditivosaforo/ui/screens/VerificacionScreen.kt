@@ -19,8 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.hansbarrera.aditivosaforo.AppState
+import com.hansbarrera.aditivosaforo.R
 import com.hansbarrera.aditivosaforo.calc.Formulas
 import com.hansbarrera.aditivosaforo.ui.components.NumberField
 import com.hansbarrera.aditivosaforo.ui.components.ResultRow
@@ -43,11 +45,11 @@ fun VerificacionScreen(appState: AppState) {
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Text("Verificación contra el display", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.title_verificacion), style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.padding(top = 12.dp))
 
-        SectionCard("Caudal de hormigón") {
-            NumberField("Rendimiento calculado", rendimientoCalculado, { rendimientoCalculado = it }, unit = "m3/hr", step = 0.1, decimals = 2)
+        SectionCard(stringResource(R.string.section_caudal_hormigon)) {
+            NumberField(stringResource(R.string.label_rendimiento_calculado), rendimientoCalculado, { rendimientoCalculado = it }, unit = "m3/hr", step = 0.1, decimals = 2)
             val guardadoRend = appState.rendimientoM3Hr.value
             if (guardadoRend != null) {
                 Spacer(modifier = Modifier.padding(top = 6.dp))
@@ -55,15 +57,15 @@ fun VerificacionScreen(appState: AppState) {
                     onClick = { rendimientoCalculado = formatNumber(guardadoRend, 6) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Usar valor guardado (${formatNumber(guardadoRend)} m3/hr)")
+                    Text(stringResource(R.string.btn_usar_valor_guardado_m3hr, formatNumber(guardadoRend)))
                 }
             }
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Rendimiento según display", rendimientoDisplay, { rendimientoDisplay = it }, unit = "m3/hr", step = 0.1, decimals = 2)
+            NumberField(stringResource(R.string.label_rendimiento_display), rendimientoDisplay, { rendimientoDisplay = it }, unit = "m3/hr", step = 0.1, decimals = 2)
         }
 
-        SectionCard("Caudal de aditivo") {
-            NumberField("Caudal de aditivo calculado", aditivoCalculado, { aditivoCalculado = it }, unit = "lts/min", step = 0.1, decimals = 2)
+        SectionCard(stringResource(R.string.section_caudal_aditivo)) {
+            NumberField(stringResource(R.string.label_caudal_aditivo_calculado), aditivoCalculado, { aditivoCalculado = it }, unit = "lts/min", step = 0.1, decimals = 2)
             val guardadoAditivo = appState.caudalAditivoLtsMin.value
             if (guardadoAditivo != null) {
                 Spacer(modifier = Modifier.padding(top = 6.dp))
@@ -71,15 +73,15 @@ fun VerificacionScreen(appState: AppState) {
                     onClick = { aditivoCalculado = formatNumber(guardadoAditivo, 6) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Usar valor guardado (${formatNumber(guardadoAditivo)} lts/min)")
+                    Text(stringResource(R.string.btn_usar_valor_guardado_ltsmin, formatNumber(guardadoAditivo)))
                 }
             }
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Aditivo según display", aditivoDisplay, { aditivoDisplay = it }, unit = "lts/min", step = 0.1, decimals = 2)
+            NumberField(stringResource(R.string.label_aditivo_display), aditivoDisplay, { aditivoDisplay = it }, unit = "lts/min", step = 0.1, decimals = 2)
         }
 
-        SectionCard("Porcentaje de aditivo") {
-            NumberField("Porcentaje calculado", porcentajeCalculado, { porcentajeCalculado = it }, unit = "fracción, ej. 0.08 = 8%", step = 0.005, decimals = 3)
+        SectionCard(stringResource(R.string.porcentaje_aditivo_label)) {
+            NumberField(stringResource(R.string.label_porcentaje_calculado), porcentajeCalculado, { porcentajeCalculado = it }, unit = stringResource(R.string.unit_fraccion_008), step = 0.005, decimals = 3)
             val guardadoPorcentaje = appState.porcentajeAditivoCalculado.value
             if (guardadoPorcentaje != null) {
                 Spacer(modifier = Modifier.padding(top = 6.dp))
@@ -87,11 +89,11 @@ fun VerificacionScreen(appState: AppState) {
                     onClick = { porcentajeCalculado = formatNumber(guardadoPorcentaje, 6) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Usar valor guardado (${formatNumber(guardadoPorcentaje)})")
+                    Text(stringResource(R.string.btn_usar_valor_guardado, formatNumber(guardadoPorcentaje)))
                 }
             }
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField("Porcentaje según muestra del display", porcentajeDisplay, { porcentajeDisplay = it }, unit = "fracción", step = 0.005, decimals = 3)
+            NumberField(stringResource(R.string.label_porcentaje_display), porcentajeDisplay, { porcentajeDisplay = it }, unit = stringResource(R.string.unit_fraccion), step = 0.005, decimals = 3)
         }
 
         val resultado = remember(
@@ -127,12 +129,12 @@ fun VerificacionScreen(appState: AppState) {
             ))
         }
 
-        SectionCard("Desviaciones") {
-            ResultRow("Caudal de hormigón", resultado.desviacionCaudalHormigon * 100.0, "%", decimals = 1)
+        SectionCard(stringResource(R.string.section_desviaciones)) {
+            ResultRow(stringResource(R.string.section_caudal_hormigon), resultado.desviacionCaudalHormigon * 100.0, "%", decimals = 1)
             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-            ResultRow("Caudal de aditivo", resultado.desviacionCaudalAditivo * 100.0, "%", decimals = 1)
+            ResultRow(stringResource(R.string.section_caudal_aditivo), resultado.desviacionCaudalAditivo * 100.0, "%", decimals = 1)
             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-            ResultRow("Porcentaje de aditivo", resultado.desviacionPorcentajeAditivo * 100.0, "%", decimals = 1)
+            ResultRow(stringResource(R.string.porcentaje_aditivo_label), resultado.desviacionPorcentajeAditivo * 100.0, "%", decimals = 1)
 
             Spacer(modifier = Modifier.padding(top = 8.dp))
             OutlinedButton(
@@ -148,7 +150,7 @@ fun VerificacionScreen(appState: AppState) {
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Guardar estos datos en el registro de aforo")
+                Text(stringResource(R.string.btn_guardar_datos_aforo))
             }
         }
     }

@@ -1,3 +1,141 @@
 <resources>
     <string name="app_name">Aditivos y Émboladas</string>
+
+    <!-- Navegación -->
+    <string name="nav_rendimiento">Rendimiento</string>
+    <string name="nav_aditivo">Aditivo</string>
+    <string name="nav_verificacion">Verificación</string>
+    <string name="nav_potenciometro">Potenciómetro</string>
+    <string name="nav_aforo">Aforo</string>
+    <string name="nav_acerca">Acerca de</string>
+
+    <!-- Comunes -->
+    <string name="result_title">Resultado</string>
+    <string name="rendimiento_bomba_label">Rendimiento de la bomba</string>
+    <string name="usar_rendimiento_guardado">Usar rendimiento guardado (%1$s m3/hr)</string>
+    <string name="porcentaje_aditivo_label">Porcentaje de aditivo</string>
+    <string name="unit_fraccion_008">fracción, ej. 0.08 = 8%</string>
+    <string name="posicion_potenciometro_label">Posición del potenciómetro</string>
+    <string name="usar_rendimiento_otras">Usar este rendimiento en las otras calculadoras</string>
+
+    <!-- Rendimiento -->
+    <string name="title_rendimiento">Rendimiento de la bomba</string>
+    <string name="tab_por_emboladas">Por émboladas</string>
+    <string name="tab_por_tiempo_llenado">Por tiempo de llenado</string>
+    <string name="section_datos_bomba">Datos de la bomba</string>
+    <string name="label_tipo_bomba">Tipo de bomba</string>
+    <string name="label_volumen_cilindro">Volumen cilindro</string>
+    <string name="label_numero_emboladas">Número de émboladas</string>
+    <string name="unit_por_minuto">por minuto</string>
+    <string name="label_factor_llenado">Factor de llenado</string>
+    <string name="result_equipo_seleccionado">Equipo seleccionado: %1$s</string>
+    <string name="result_volumen_cilindro_efectivo">Volumen cilindro efectivo</string>
+    <string name="result_rendimiento">Rendimiento</string>
+    <string name="guardado_rendimiento">Rendimiento guardado: %1$s m3/hr</string>
+    <string name="section_datos_llenado">Datos de llenado</string>
+    <string name="label_tiempo_llenado">Tiempo de llenado</string>
+    <string name="label_volumen_llenado">Volumen de llenado</string>
+
+    <!-- Aditivo -->
+    <string name="title_aditivo">Dosis de aditivo / acelerante</string>
+    <string name="section_datos">Datos</string>
+    <string name="label_dosis_cemento">Dosis de cemento</string>
+    <string name="label_densidad_aditivo">Densidad del aditivo</string>
+    <string name="result_kilos_aditivo">Kilos de aditivo requerido</string>
+    <string name="result_litros_aditivo">Litros de aditivo</string>
+    <string name="btn_usar_resultados_verificacion">Usar estos resultados en Verificación</string>
+
+    <!-- Verificación -->
+    <string name="title_verificacion">Verificación contra el display</string>
+    <string name="section_caudal_hormigon">Caudal de hormigón</string>
+    <string name="label_rendimiento_calculado">Rendimiento calculado</string>
+    <string name="btn_usar_valor_guardado_m3hr">Usar valor guardado (%1$s m3/hr)</string>
+    <string name="label_rendimiento_display">Rendimiento según display</string>
+    <string name="section_caudal_aditivo">Caudal de aditivo</string>
+    <string name="label_caudal_aditivo_calculado">Caudal de aditivo calculado</string>
+    <string name="btn_usar_valor_guardado_ltsmin">Usar valor guardado (%1$s lts/min)</string>
+    <string name="label_aditivo_display">Aditivo según display</string>
+    <string name="label_porcentaje_calculado">Porcentaje calculado</string>
+    <string name="btn_usar_valor_guardado">Usar valor guardado (%1$s)</string>
+    <string name="unit_fraccion">fracción</string>
+    <string name="label_porcentaje_display">Porcentaje según muestra del display</string>
+    <string name="section_desviaciones">Desviaciones</string>
+    <string name="btn_guardar_datos_aforo">Guardar estos datos en el registro de aforo</string>
+
+    <!-- Potenciómetro -->
+    <string name="title_potenciometro">Posición del potenciómetro</string>
+    <string name="section_acelerante_requerido">Acelerante requerido (según diseño)</string>
+    <string name="label_cemento_por_m3">Cantidad de cemento por m3</string>
+    <string name="label_porcentaje_acelerante_requerido">Porcentaje de acelerante requerido</string>
+    <string name="result_acelerante_requerido">Acelerante requerido</string>
+    <string name="btn_usar_objetivo_potenciometro">Usar este valor como objetivo del potenciómetro</string>
+    <string name="section_tabla_calibracion">Tabla de calibración del potenciómetro</string>
+    <string name="desc_tabla_calibracion">Edita los valores reales medidos en el equipo (potenciómetro vs. acelerante en kg/min).</string>
+    <string name="header_potenciometro">Potenciómetro</string>
+    <string name="header_acelerante_kgmin">Acelerante (kg/min)</string>
+    <string name="section_posicion_interpolada">Posición interpolada</string>
+    <string name="label_acelerante_objetivo">Acelerante objetivo</string>
+    <string name="btn_usar_posicion_aforo">Usar esta posición en el registro de aforo</string>
+    <string name="msg_min_dos_filas">Ingresa al menos dos filas de la tabla con valores de acelerante distintos.</string>
+
+    <!-- Aforo -->
+    <string name="title_aforo">Registro de aforo</string>
+    <string name="tab_nuevo_registro">Nuevo registro</string>
+    <string name="tab_historial">Historial</string>
+    <string name="section_datos_trabajo">Datos del trabajo</string>
+    <string name="label_fecha">Fecha (aaaa-mm-dd)</string>
+    <string name="label_cliente">Cliente</string>
+    <string name="label_proyecto_mina">Proyecto o mina</string>
+    <string name="label_lugar_aforo">Lugar del aforo</string>
+    <string name="label_operador">Operador</string>
+    <string name="label_numero_equipo">Número de equipo</string>
+    <string name="label_odometro">Odómetro</string>
+    <string name="label_observaciones">Observaciones</string>
+    <string name="section_resultados_guardados">Resultados guardados</string>
+    <string name="msg_no_datos_guardados">Aún no hay datos guardados. Usa los botones "Usar este resultado..." o "Guardar estos datos..." en las otras pestañas para traerlos aquí.</string>
+    <string name="section_fotografias">Fotografías</string>
+    <string name="btn_tomar_foto">Tomar foto</string>
+    <string name="btn_cargar_imagen">Cargar imagen</string>
+    <string name="label_fotos_count">Fotos (%1$d):</string>
+    <string name="btn_quitar">Quitar</string>
+    <string name="label_nota_foto">Nota / pie de foto</string>
+    <string name="section_guardar_exportar">Guardar y exportar</string>
+    <string name="label_id_registro">ID del registro: %1$s</string>
+    <string name="btn_guardar_registro">Guardar registro</string>
+    <string name="msg_registro_guardado">Registro guardado: %1$s</string>
+    <string name="msg_guarda_antes_exportar">Guarda el registro antes de exportarlo.</string>
+    <string name="chooser_compartir_registro">Compartir registro de aforo</string>
+    <string name="btn_exportar_compartir">Exportar y compartir</string>
+    <string name="btn_limpiar_formulario">Limpiar formulario (nuevo registro)</string>
+    <string name="msg_permiso_camara">Se necesita el permiso de cámara para tomar fotos.</string>
+    <string name="msg_no_registros">Aún no hay registros guardados. Crea uno en la pestaña "Nuevo registro".</string>
+    <string name="historial_fecha">Fecha: %1$s</string>
+    <string name="historial_cliente">Cliente: %1$s</string>
+    <string name="historial_proyecto">Proyecto o mina: %1$s</string>
+    <string name="historial_lugar">Lugar del aforo: %1$s</string>
+    <string name="historial_operador">Operador: %1$s</string>
+    <string name="historial_equipo">Número de equipo: %1$s</string>
+    <string name="historial_odometro">Odómetro: %1$s</string>
+    <string name="historial_observaciones">Observaciones: %1$s</string>
+    <string name="historial_resultados">Resultados:</string>
+    <string name="historial_fotos_count">%1$d foto(s)</string>
+    <string name="btn_exportar">Exportar</string>
+    <string name="btn_eliminar">Eliminar</string>
+
+    <!-- Acerca de -->
+    <string name="section_apariencia">Apariencia</string>
+    <string name="desc_apariencia">Elige el tema de la aplicación. "Oscuro" es útil para trabajos con poca iluminación, por ejemplo dentro de túneles.</string>
+    <string name="chip_seguir_sistema">Seguir sistema</string>
+    <string name="chip_claro">Claro</string>
+    <string name="chip_oscuro">Oscuro</string>
+    <string name="label_version">Versión %1$s</string>
+    <string name="desc_app">Calculadora de campo para operaciones de shotcrete: rendimiento de la bomba, dosis de aditivo/acelerante, verificación contra el display, posición del potenciómetro del dosificador y registro de aforos con fotografías.</string>
+    <string name="credit_hecho_por">Hecho por Hans Barrera</string>
+    <string name="section_privacidad">Privacidad y seguridad</string>
+    <string name="desc_privacidad">• La app funciona 100% sin conexión: no requiere ni solicita permiso de Internet.\n• No incluye anuncios, rastreadores ni librerías de terceros fuera de las oficiales de Android.\n• No envía, recibe ni almacena datos fuera de este dispositivo.\n• El permiso de cámara se usa solo para tomar fotos del registro de aforo; las fotos se guardan localmente y solo se comparten si tú lo haces explícitamente con la opción "Exportar y compartir".\n• El código fuente completo está disponible para revisión.</string>
+
+    <!-- Gráfico potenciómetro -->
+    <string name="chart_min_two_rows">Agrega al menos dos filas con valores distintos en la tabla para ver la curva.</string>
+    <string name="chart_axis_labels">Eje Y: Acelerante (kg/min)  ·  Eje X: Posición del potenciómetro</string>
+    <string name="chart_objetivo">● Objetivo: posición %1$s para %2$s kg/min</string>
 </resources>

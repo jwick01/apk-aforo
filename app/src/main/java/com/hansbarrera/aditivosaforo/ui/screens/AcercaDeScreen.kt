@@ -14,10 +14,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hansbarrera.aditivosaforo.AppState
 import com.hansbarrera.aditivosaforo.BuildConfig
+import com.hansbarrera.aditivosaforo.R
 import com.hansbarrera.aditivosaforo.ui.components.SectionCard
 
 @Composable
@@ -28,13 +30,12 @@ fun AcercaDeScreen(appState: AppState) {
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Text("Acerca de", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.nav_acerca), style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.padding(top = 12.dp))
 
-        SectionCard("Apariencia") {
+        SectionCard(stringResource(R.string.section_apariencia)) {
             Text(
-                "Elige el tema de la aplicación. \"Oscuro\" es útil para trabajos con poca " +
-                    "iluminación, por ejemplo dentro de túneles.",
+                stringResource(R.string.desc_apariencia),
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.padding(top = 8.dp))
@@ -46,46 +47,38 @@ fun AcercaDeScreen(appState: AppState) {
                 FilterChip(
                     selected = temaActual == null,
                     onClick = { appState.setTemaOscuro(null) },
-                    label = { Text("Seguir sistema") },
+                    label = { Text(stringResource(R.string.chip_seguir_sistema)) },
                     modifier = Modifier.weight(1f)
                 )
                 FilterChip(
                     selected = temaActual == false,
                     onClick = { appState.setTemaOscuro(false) },
-                    label = { Text("Claro") },
+                    label = { Text(stringResource(R.string.chip_claro)) },
                     modifier = Modifier.weight(1f)
                 )
                 FilterChip(
                     selected = temaActual == true,
                     onClick = { appState.setTemaOscuro(true) },
-                    label = { Text("Oscuro") },
+                    label = { Text(stringResource(R.string.chip_oscuro)) },
                     modifier = Modifier.weight(1f)
                 )
             }
         }
 
-        SectionCard("Aditivos y Émboladas") {
-            Text("Versión ${BuildConfig.VERSION_NAME}", style = MaterialTheme.typography.bodyMedium)
+        SectionCard(stringResource(R.string.app_name)) {
+            Text(stringResource(R.string.label_version, BuildConfig.VERSION_NAME), style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.padding(top = 8.dp))
             Text(
-                "Calculadora de campo para operaciones de shotcrete: rendimiento de la bomba, " +
-                    "dosis de aditivo/acelerante, verificación contra el display, posición del " +
-                    "potenciómetro del dosificador y registro de aforos con fotografías.",
+                stringResource(R.string.desc_app),
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.padding(top = 12.dp))
-            Text("Hecho por Hans Barrera", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.credit_hecho_por), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         }
 
-        SectionCard("Privacidad y seguridad") {
+        SectionCard(stringResource(R.string.section_privacidad)) {
             Text(
-                "• La app funciona 100% sin conexión: no requiere ni solicita permiso de Internet.\n" +
-                    "• No incluye anuncios, rastreadores ni librerías de terceros fuera de las oficiales de Android.\n" +
-                    "• No envía, recibe ni almacena datos fuera de este dispositivo.\n" +
-                    "• El permiso de cámara se usa solo para tomar fotos del registro de aforo; " +
-                    "las fotos se guardan localmente y solo se comparten si tú lo haces explícitamente " +
-                    "con la opción \"Exportar y compartir\".\n" +
-                    "• El código fuente completo está disponible para revisión.",
+                stringResource(R.string.desc_privacidad),
                 style = MaterialTheme.typography.bodyMedium
             )
         }
