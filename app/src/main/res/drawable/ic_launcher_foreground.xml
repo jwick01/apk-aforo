@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Gauge outer ring -->
+    <path
+        android:pathData="M54,18 A36,36 0 1 1 53.9,18 Z M54,26 A28,28 0 1 0 54.1,26 Z"
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd" />
+
+    <!-- Tick marks -->
+    <path
+        android:pathData="M54,22 L54,30 M86,54 L78,54 M22,54 L30,54 M76.3,31.7 L70.7,37.3 M37.3,70.7 L31.7,76.3"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:strokeLineCap="round" />
+
+    <!-- Needle -->
+    <path
+        android:pathData="M54,58 L76,34 L80,38 L58,62 Z"
+        android:fillColor="#FFFFFF" />
+
+    <!-- Center hub -->
+    <path
+        android:pathData="M54,54 m-7,0 a7,7 0 1 0 14,0 a7,7 0 1 0 -14,0"
+        android:fillColor="#FFFFFF" />
+
+    <!-- Drop accent -->
+    <path
+        android:pathData="M54,68 C58,74 60,77 60,80 a6,6 0 1 1 -12,0 c0,-3 2,-6 6,-12 Z"
+        android:fillColor="#FFFFFF" />
+</vector>
