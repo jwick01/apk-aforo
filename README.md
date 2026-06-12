@@ -16,10 +16,25 @@ de shotcrete, hecha por **Hans Barrera**. Funciona **100% sin conexión**
    lecturas reales del equipo y muestra las desviaciones (%).
 4. **Posición del potenciómetro**: calcula el acelerante requerido según diseño
    e interpola la posición del potenciómetro a partir de una tabla de
-   calibración editable.
+   calibración editable, con gráfico de la curva.
 
 Las fórmulas replican exactamente las de la hoja de cálculo original
 (`aditivos y envoladas`, `display`, `tablas para generar informe`).
+
+## Registro de aforo
+
+La pestaña **Aforo** permite guardar, para cada trabajo, los datos generales
+(fecha, cliente, proyecto o mina, lugar del aforo, operador, número de equipo,
+odómetro y observaciones), un resumen de los resultados calculados en las
+otras pestañas (botones "Usar este resultado...") y fotografías tomadas con
+la cámara o cargadas desde la galería.
+
+Cada registro se guarda localmente en el dispositivo con un ID correlativo
+(`AFORO-aaaa-mm-dd-NNN`) y sus fotos numeradas de forma correlativa
+(`foto01.jpg`, `foto02.jpg`, ...). Desde el **Historial** se puede revisar,
+eliminar o **exportar** un registro: la exportación genera un `.zip` con
+`datos.json` y las fotos, y abre el selector de "Compartir" de Android para
+enviarlo, por ejemplo, a la app de Claude para generar el informe.
 
 ## Cómo obtener el APK
 
@@ -48,6 +63,9 @@ El APK queda en `app/build/outputs/apk/debug/app-debug.apk`.
 ## Seguridad
 
 - **Sin permiso de Internet**: la app no puede enviar ni recibir datos por red.
+- **Permiso de cámara**: solo se usa para tomar fotos del registro de aforo;
+  las fotos se guardan en el almacenamiento privado de la app y solo salen
+  del dispositivo si el usuario usa explícitamente "Exportar y compartir".
 - **Sin librerías de terceros**: solo dependencias oficiales de AndroidX/Jetpack
   Compose y Material 3.
 - **`allowBackup="false"`**: evita que los datos de la app salgan del

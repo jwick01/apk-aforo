@@ -31,8 +31,8 @@ fun AcercaDeScreen() {
             Spacer(modifier = Modifier.padding(top = 8.dp))
             Text(
                 "Calculadora de campo para operaciones de shotcrete: rendimiento de la bomba, " +
-                    "dosis de aditivo/acelerante, verificación contra el display y posición del " +
-                    "potenciómetro del dosificador.",
+                    "dosis de aditivo/acelerante, verificación contra el display, posición del " +
+                    "potenciómetro del dosificador y registro de aforos con fotografías.",
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.padding(top = 12.dp))
@@ -44,6 +44,9 @@ fun AcercaDeScreen() {
                 "• La app funciona 100% sin conexión: no requiere ni solicita permiso de Internet.\n" +
                     "• No incluye anuncios, rastreadores ni librerías de terceros fuera de las oficiales de Android.\n" +
                     "• No envía, recibe ni almacena datos fuera de este dispositivo.\n" +
+                    "• El permiso de cámara se usa solo para tomar fotos del registro de aforo; " +
+                    "las fotos se guardan localmente y solo se comparten si tú lo haces explícitamente " +
+                    "con la opción \"Exportar y compartir\".\n" +
                     "• El código fuente completo está disponible para revisión.",
                 style = MaterialTheme.typography.bodyMedium
             )

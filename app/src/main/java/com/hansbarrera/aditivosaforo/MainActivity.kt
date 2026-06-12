@@ -19,6 +19,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hansbarrera.aditivosaforo.ui.screens.AcercaDeScreen
 import com.hansbarrera.aditivosaforo.ui.screens.AditivoScreen
+import com.hansbarrera.aditivosaforo.ui.screens.AforoScreen
 import com.hansbarrera.aditivosaforo.ui.screens.PotenciometroScreen
 import com.hansbarrera.aditivosaforo.ui.screens.RendimientoScreen
 import com.hansbarrera.aditivosaforo.ui.screens.VerificacionScreen
@@ -31,6 +32,7 @@ private val destinos = listOf(
     Destino("aditivo", "Aditivo", "🧪"),
     Destino("verificacion", "Verificación", "📊"),
     Destino("potenciometro", "Potenciómetro", "🎛"),
+    Destino("aforo", "Aforo", "📋"),
     Destino("acerca", "Acerca de", "ℹ")
 )
 
@@ -86,6 +88,7 @@ private fun AppNavigation() {
             composable("aditivo") { AditivoScreen(appState) }
             composable("verificacion") { VerificacionScreen(appState) }
             composable("potenciometro") { PotenciometroScreen(appState) }
+            composable("aforo") { AforoScreen(appState) }
             composable("acerca") { AcercaDeScreen() }
         }
     }

@@ -82,7 +82,10 @@ fun PotenciometroScreen(appState: AppState) {
             ResultRow("Acelerante requerido", aceleranteCalculado, "kg/min")
             Spacer(modifier = Modifier.padding(top = 8.dp))
             OutlinedButton(
-                onClick = { objetivoManual = formatNumber(aceleranteCalculado, 6) },
+                onClick = {
+                    objetivoManual = formatNumber(aceleranteCalculado, 6)
+                    appState.aceleranteRequeridoKgMin.value = aceleranteCalculado
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Usar este valor como objetivo del potenciómetro")
@@ -132,6 +135,13 @@ fun PotenciometroScreen(appState: AppState) {
             Spacer(modifier = Modifier.padding(top = 8.dp))
             if (posicion != null) {
                 ResultRow("Posición del potenciómetro", posicion, "", decimals = 2)
+                Spacer(modifier = Modifier.padding(top = 8.dp))
+                OutlinedButton(
+                    onClick = { appState.posicionPotenciometro.value = posicion },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Usar esta posición en el registro de aforo")
+                }
             } else {
                 Text(
                     "Ingresa al menos dos filas de la tabla con valores de acelerante distintos.",

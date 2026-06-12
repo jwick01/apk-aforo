@@ -18,4 +18,7 @@ class AppState {
 
     /** Última cantidad de acelerante requerida (kg/min), para la pestaña del potenciómetro. */
     val aceleranteRequeridoKgMin = mutableStateOf<Double?>(null)
+
+    /** Última posición interpolada del potenciómetro, para incluir en el registro de aforo. */
+    val posicionPotenciometro = mutableStateOf<Double?>(null)
 }
