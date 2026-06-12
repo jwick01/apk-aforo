@@ -112,16 +112,22 @@ private fun RendimientoPorEmboladas(appState: AppState) {
 
     // Registra automáticamente los datos ingresados, para que queden disponibles
     // en el informe aunque no se presione el botón de "usar este rendimiento".
-    LaunchedEffect(volumenCilindro, emboladas, factorLlenado, resultado.rendimientoM3Hr) {
+    LaunchedEffect(volumenCilindro, emboladas, factorLlenado, presetIndex, resultado.rendimientoM3Hr) {
         appState.registrarDatos(mapOf(
+            "Rendimiento (émboladas) - Equipo (tipo de bomba)" to Presets.bombas[presetIndex].nombre,
             "Rendimiento (émboladas) - Volumen cilindro (lts)" to volumenCilindro,
             "Rendimiento (émboladas) - Émboladas por minuto" to emboladas,
             "Rendimiento (émboladas) - Factor de llenado" to factorLlenado,
-            "Rendimiento de la bomba (m3/hr)" to formatNumber(resultado.rendimientoM3Hr, 6)
+            "Rendimiento de la bomba (m3/hr)" to formatNumber(resultado.rendimientoM3Hr, 1)
         ))
     }
 
     SectionCard("Resultado") {
+        Text(
+            "Equipo seleccionado: ${Presets.bombas[presetIndex].nombre}",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.padding(top = 4.dp))
         ResultRow("Volumen cilindro efectivo", resultado.volumenEfectivoLtsMin, "lts/min")
         ResultRow("Volumen cilindro efectivo", resultado.volumenEfectivoLtsHr, "lts/hr")
         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
@@ -132,10 +138,11 @@ private fun RendimientoPorEmboladas(appState: AppState) {
             onClick = {
                 appState.rendimientoM3Hr.value = resultado.rendimientoM3Hr
                 appState.registrarDatos(mapOf(
+                    "Rendimiento (émboladas) - Equipo (tipo de bomba)" to Presets.bombas[presetIndex].nombre,
                     "Rendimiento (émboladas) - Volumen cilindro (lts)" to volumenCilindro,
                     "Rendimiento (émboladas) - Émboladas por minuto" to emboladas,
                     "Rendimiento (émboladas) - Factor de llenado" to factorLlenado,
-                    "Rendimiento de la bomba (m3/hr)" to formatNumber(resultado.rendimientoM3Hr, 6)
+                    "Rendimiento de la bomba (m3/hr)" to formatNumber(resultado.rendimientoM3Hr, 1)
                 ))
             },
             modifier = Modifier.fillMaxWidth()
@@ -170,7 +177,7 @@ private fun RendimientoPorTiempoLlenado(appState: AppState) {
         appState.registrarDatos(mapOf(
             "Rendimiento (tiempo de llenado) - Tiempo de llenado (seg)" to tiempoLlenado,
             "Rendimiento (tiempo de llenado) - Volumen de llenado (m3)" to volumenLlenado,
-            "Rendimiento de la bomba (m3/hr)" to formatNumber(rendimiento, 6)
+            "Rendimiento de la bomba (m3/hr)" to formatNumber(rendimiento, 1)
         ))
     }
 
@@ -184,7 +191,7 @@ private fun RendimientoPorTiempoLlenado(appState: AppState) {
                 appState.registrarDatos(mapOf(
                     "Rendimiento (tiempo de llenado) - Tiempo de llenado (seg)" to tiempoLlenado,
                     "Rendimiento (tiempo de llenado) - Volumen de llenado (m3)" to volumenLlenado,
-                    "Rendimiento de la bomba (m3/hr)" to formatNumber(rendimiento, 6)
+                    "Rendimiento de la bomba (m3/hr)" to formatNumber(rendimiento, 1)
                 ))
             },
             modifier = Modifier.fillMaxWidth()

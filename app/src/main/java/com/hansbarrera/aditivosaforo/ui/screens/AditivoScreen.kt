@@ -79,14 +79,13 @@ fun AditivoScreen(appState: AppState) {
 
         // Registra automáticamente los datos ingresados, para que queden disponibles
         // en el informe aunque no se presione el botón "Usar estos resultados...".
-        LaunchedEffect(rendimiento, dosisCemento, porcentajeAditivo, densidadAditivo, resultado) {
+        LaunchedEffect(dosisCemento, porcentajeAditivo, densidadAditivo, resultado) {
             appState.registrarDatos(mapOf(
-                "Aditivo - Rendimiento de la bomba (m3/hr)" to rendimiento,
                 "Aditivo - Dosis de cemento (kg/m3)" to dosisCemento,
                 "Aditivo - Porcentaje de aditivo" to porcentajeAditivo,
                 "Aditivo - Densidad del aditivo (kg/lt)" to densidadAditivo,
-                "Aditivo - Kilos de aditivo requerido (kg/min)" to formatNumber(resultado.kilosAditivoKgMin, 6),
-                "Aditivo - Litros de aditivo (lts/min)" to formatNumber(resultado.litrosAditivoLtsMin, 6)
+                "Aditivo - Kilos de aditivo requerido (kg/min)" to formatNumber(resultado.kilosAditivoKgMin, 1),
+                "Aditivo - Litros de aditivo (lts/min)" to formatNumber(resultado.litrosAditivoLtsMin, 1)
             ))
         }
 
@@ -101,12 +100,11 @@ fun AditivoScreen(appState: AppState) {
                     appState.caudalAditivoLtsMin.value = resultado.litrosAditivoLtsMin
                     appState.porcentajeAditivoCalculado.value = porcentajeAditivo.toDoubleOrZero()
                     appState.registrarDatos(mapOf(
-                        "Aditivo - Rendimiento de la bomba (m3/hr)" to rendimiento,
                         "Aditivo - Dosis de cemento (kg/m3)" to dosisCemento,
                         "Aditivo - Porcentaje de aditivo" to porcentajeAditivo,
                         "Aditivo - Densidad del aditivo (kg/lt)" to densidadAditivo,
-                        "Aditivo - Kilos de aditivo requerido (kg/min)" to formatNumber(resultado.kilosAditivoKgMin, 6),
-                        "Aditivo - Litros de aditivo (lts/min)" to formatNumber(resultado.litrosAditivoLtsMin, 6)
+                        "Aditivo - Kilos de aditivo requerido (kg/min)" to formatNumber(resultado.kilosAditivoKgMin, 1),
+                        "Aditivo - Litros de aditivo (lts/min)" to formatNumber(resultado.litrosAditivoLtsMin, 1)
                     ))
                 },
                 modifier = Modifier.fillMaxWidth()

@@ -123,7 +123,7 @@ fun SectionCard(title: String, content: @Composable () -> Unit) {
 
 /** Fila etiqueta/valor para mostrar resultados. */
 @Composable
-fun ResultRow(label: String, value: Double, unit: String, decimals: Int = 3) {
+fun ResultRow(label: String, value: Double, unit: String, decimals: Int = 1) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween

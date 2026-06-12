@@ -85,7 +85,7 @@ fun PotenciometroScreen(appState: AppState) {
             appState.registrarDatos(mapOf(
                 "Potenciómetro - Cantidad de cemento (kg/m3)" to cementoPorM3,
                 "Potenciómetro - Porcentaje de acelerante requerido" to porcentajeAcelerante,
-                "Potenciómetro - Acelerante requerido (kg/min)" to formatNumber(aceleranteCalculado, 6)
+                "Potenciómetro - Acelerante requerido (kg/min)" to formatNumber(aceleranteCalculado, 1)
             ))
         }
 
@@ -98,7 +98,7 @@ fun PotenciometroScreen(appState: AppState) {
                     appState.registrarDatos(mapOf(
                         "Potenciómetro - Cantidad de cemento (kg/m3)" to cementoPorM3,
                         "Potenciómetro - Porcentaje de acelerante requerido" to porcentajeAcelerante,
-                        "Potenciómetro - Acelerante requerido (kg/min)" to formatNumber(aceleranteCalculado, 6)
+                        "Potenciómetro - Acelerante requerido (kg/min)" to formatNumber(aceleranteCalculado, 1)
                     ))
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -150,7 +150,7 @@ fun PotenciometroScreen(appState: AppState) {
             val tablaTexto = remember(tabla) {
                 tabla.filter { it.aceleranteKgMin > 0.0 }
                     .sortedBy { it.potenciometro }
-                    .joinToString("; ") { "${formatNumber(it.potenciometro, 2)} -> ${formatNumber(it.aceleranteKgMin, 2)} kg/min" }
+                    .joinToString("; ") { "${formatNumber(it.potenciometro, 1)} -> ${formatNumber(it.aceleranteKgMin, 1)} kg/min" }
             }
 
             // Registra automáticamente la tabla, el objetivo y la posición interpolada,
@@ -161,21 +161,21 @@ fun PotenciometroScreen(appState: AppState) {
                     "Potenciómetro - Acelerante objetivo (kg/min)" to objetivoManual
                 )
                 if (posicion != null) {
-                    datos["Potenciómetro - Posición interpolada"] = formatNumber(posicion, 6)
+                    datos["Potenciómetro - Posición interpolada"] = formatNumber(posicion, 1)
                 }
                 appState.registrarDatos(datos)
             }
 
             Spacer(modifier = Modifier.padding(top = 8.dp))
             if (posicion != null) {
-                ResultRow("Posición del potenciómetro", posicion, "", decimals = 2)
+                ResultRow("Posición del potenciómetro", posicion, "", decimals = 1)
                 Spacer(modifier = Modifier.padding(top = 8.dp))
                 OutlinedButton(
                     onClick = {
                         appState.registrarDatos(mapOf(
                             "Potenciómetro - Tabla de calibración" to tablaTexto,
                             "Potenciómetro - Acelerante objetivo (kg/min)" to objetivoManual,
-                            "Potenciómetro - Posición interpolada" to formatNumber(posicion, 6)
+                            "Potenciómetro - Posición interpolada" to formatNumber(posicion, 1)
                         ))
                     },
                     modifier = Modifier.fillMaxWidth()
