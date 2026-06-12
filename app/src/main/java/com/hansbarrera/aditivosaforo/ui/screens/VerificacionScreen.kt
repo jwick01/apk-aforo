@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -106,6 +107,27 @@ fun VerificacionScreen(appState: AppState) {
                 porcentajeAditivoCalculado = porcentajeCalculado.toDoubleOrZero(),
                 porcentajeAditivoDisplay = porcentajeDisplay.toDoubleOrZero()
             )
+        }
+
+        // Registra automáticamente los datos ingresados, para que queden disponibles
+        // en el informe aunque no se presione el botón "Guardar estos datos...".
+        LaunchedEffect(
+            rendimientoCalculado, rendimientoDisplay,
+            aditivoCalculado, aditivoDisplay,
+            porcentajeCalculado, porcentajeDisplay,
+            resultado
+        ) {
+            appState.registrarDatos(mapOf(
+                "Verificación - Rendimiento calculado (m3/hr)" to rendimientoCalculado,
+                "Verificación - Rendimiento según display (m3/hr)" to rendimientoDisplay,
+                "Verificación - Caudal de aditivo calculado (lts/min)" to aditivoCalculado,
+                "Verificación - Aditivo según display (lts/min)" to aditivoDisplay,
+                "Verificación - Porcentaje calculado" to porcentajeCalculado,
+                "Verificación - Porcentaje según display" to porcentajeDisplay,
+                "Verificación - Desviación caudal de hormigón (%)" to formatNumber(resultado.desviacionCaudalHormigon * 100.0, 2),
+                "Verificación - Desviación caudal de aditivo (%)" to formatNumber(resultado.desviacionCaudalAditivo * 100.0, 2),
+                "Verificación - Desviación porcentaje de aditivo (%)" to formatNumber(resultado.desviacionPorcentajeAditivo * 100.0, 2)
+            ))
         }
 
         SectionCard("Desviaciones") {

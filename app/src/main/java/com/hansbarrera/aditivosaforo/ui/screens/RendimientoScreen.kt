@@ -18,6 +18,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -109,6 +110,17 @@ private fun RendimientoPorEmboladas(appState: AppState) {
         )
     }
 
+    // Registra automáticamente los datos ingresados, para que queden disponibles
+    // en el informe aunque no se presione el botón de "usar este rendimiento".
+    LaunchedEffect(volumenCilindro, emboladas, factorLlenado, resultado.rendimientoM3Hr) {
+        appState.registrarDatos(mapOf(
+            "Rendimiento (émboladas) - Volumen cilindro (lts)" to volumenCilindro,
+            "Rendimiento (émboladas) - Émboladas por minuto" to emboladas,
+            "Rendimiento (émboladas) - Factor de llenado" to factorLlenado,
+            "Rendimiento de la bomba (m3/hr)" to formatNumber(resultado.rendimientoM3Hr, 6)
+        ))
+    }
+
     SectionCard("Resultado") {
         ResultRow("Volumen cilindro efectivo", resultado.volumenEfectivoLtsMin, "lts/min")
         ResultRow("Volumen cilindro efectivo", resultado.volumenEfectivoLtsHr, "lts/hr")
@@ -150,6 +162,16 @@ private fun RendimientoPorTiempoLlenado(appState: AppState) {
             volumenLlenadoM3 = volumenLlenado.toDoubleOrZero(),
             tiempoLlenadoSeg = tiempoLlenado.toDoubleOrZero()
         )
+    }
+
+    // Registra automáticamente los datos ingresados, para que queden disponibles
+    // en el informe aunque no se presione el botón de "usar este rendimiento".
+    LaunchedEffect(tiempoLlenado, volumenLlenado, rendimiento) {
+        appState.registrarDatos(mapOf(
+            "Rendimiento (tiempo de llenado) - Tiempo de llenado (seg)" to tiempoLlenado,
+            "Rendimiento (tiempo de llenado) - Volumen de llenado (m3)" to volumenLlenado,
+            "Rendimiento de la bomba (m3/hr)" to formatNumber(rendimiento, 6)
+        ))
     }
 
     SectionCard("Resultado") {

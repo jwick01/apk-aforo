@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -78,6 +79,16 @@ fun PotenciometroScreen(appState: AppState) {
             )
         }
 
+        // Registra automáticamente los datos ingresados, para que queden disponibles
+        // en el informe aunque no se presione el botón "Usar este valor como objetivo...".
+        LaunchedEffect(cementoPorM3, porcentajeAcelerante, aceleranteCalculado) {
+            appState.registrarDatos(mapOf(
+                "Potenciómetro - Cantidad de cemento (kg/m3)" to cementoPorM3,
+                "Potenciómetro - Porcentaje de acelerante requerido" to porcentajeAcelerante,
+                "Potenciómetro - Acelerante requerido (kg/min)" to formatNumber(aceleranteCalculado, 6)
+            ))
+        }
+
         SectionCard("Resultado") {
             ResultRow("Acelerante requerido", aceleranteCalculado, "kg/min")
             Spacer(modifier = Modifier.padding(top = 8.dp))
@@ -136,15 +147,31 @@ fun PotenciometroScreen(appState: AppState) {
                 Formulas.potenciometroInterpolado(tabla, objetivoManual.toDoubleOrZero())
             }
 
+            val tablaTexto = remember(tabla) {
+                tabla.filter { it.aceleranteKgMin > 0.0 }
+                    .sortedBy { it.potenciometro }
+                    .joinToString("; ") { "${formatNumber(it.potenciometro, 2)} -> ${formatNumber(it.aceleranteKgMin, 2)} kg/min" }
+            }
+
+            // Registra automáticamente la tabla, el objetivo y la posición interpolada,
+            // para que queden disponibles en el informe aunque no se presione el botón.
+            LaunchedEffect(tablaTexto, objetivoManual, posicion) {
+                val datos = mutableMapOf(
+                    "Potenciómetro - Tabla de calibración" to tablaTexto,
+                    "Potenciómetro - Acelerante objetivo (kg/min)" to objetivoManual
+                )
+                if (posicion != null) {
+                    datos["Potenciómetro - Posición interpolada"] = formatNumber(posicion, 6)
+                }
+                appState.registrarDatos(datos)
+            }
+
             Spacer(modifier = Modifier.padding(top = 8.dp))
             if (posicion != null) {
                 ResultRow("Posición del potenciómetro", posicion, "", decimals = 2)
                 Spacer(modifier = Modifier.padding(top = 8.dp))
                 OutlinedButton(
                     onClick = {
-                        val tablaTexto = tabla.filter { it.aceleranteKgMin > 0.0 }
-                            .sortedBy { it.potenciometro }
-                            .joinToString("; ") { "${formatNumber(it.potenciometro, 2)} -> ${formatNumber(it.aceleranteKgMin, 2)} kg/min" }
                         appState.registrarDatos(mapOf(
                             "Potenciómetro - Tabla de calibración" to tablaTexto,
                             "Potenciómetro - Acelerante objetivo (kg/min)" to objetivoManual,

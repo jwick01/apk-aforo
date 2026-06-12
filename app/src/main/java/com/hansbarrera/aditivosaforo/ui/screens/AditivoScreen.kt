@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -74,6 +75,19 @@ fun AditivoScreen(appState: AppState) {
                 porcentajeAditivo = porcentajeAditivo.toDoubleOrZero(),
                 densidadAditivo = densidadAditivo.toDoubleOrZero()
             )
+        }
+
+        // Registra automáticamente los datos ingresados, para que queden disponibles
+        // en el informe aunque no se presione el botón "Usar estos resultados...".
+        LaunchedEffect(rendimiento, dosisCemento, porcentajeAditivo, densidadAditivo, resultado) {
+            appState.registrarDatos(mapOf(
+                "Aditivo - Rendimiento de la bomba (m3/hr)" to rendimiento,
+                "Aditivo - Dosis de cemento (kg/m3)" to dosisCemento,
+                "Aditivo - Porcentaje de aditivo" to porcentajeAditivo,
+                "Aditivo - Densidad del aditivo (kg/lt)" to densidadAditivo,
+                "Aditivo - Kilos de aditivo requerido (kg/min)" to formatNumber(resultado.kilosAditivoKgMin, 6),
+                "Aditivo - Litros de aditivo (lts/min)" to formatNumber(resultado.litrosAditivoLtsMin, 6)
+            ))
         }
 
         SectionCard("Resultado") {

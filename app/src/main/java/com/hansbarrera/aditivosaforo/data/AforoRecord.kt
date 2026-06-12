@@ -34,8 +34,21 @@ data class AforoRecord(
         obj.put("odometro", odometro)
         obj.put("observaciones", observaciones)
 
+        // Agrupa las claves con formato "Sección - Campo" en sub-objetos por sección,
+        // para que el JSON exportado quede organizado por calculadora.
         val resultadosJson = JSONObject()
-        resultados.forEach { (clave, valor) -> resultadosJson.put(clave, valor) }
+        resultados.forEach { (clave, valor) ->
+            val sep = clave.indexOf(" - ")
+            if (sep >= 0) {
+                val seccion = clave.substring(0, sep)
+                val campo = clave.substring(sep + 3)
+                val grupo = resultadosJson.optJSONObject(seccion)
+                    ?: JSONObject().also { resultadosJson.put(seccion, it) }
+                grupo.put(campo, valor)
+            } else {
+                resultadosJson.put(clave, valor)
+            }
+        }
         obj.put("resultados", resultadosJson)
 
         obj.put("fotos", JSONArray(fotos))
@@ -52,7 +65,14 @@ data class AforoRecord(
             val resultados = mutableMapOf<String, String>()
             obj.optJSONObject("resultados")?.let { resultadosJson ->
                 resultadosJson.keys().forEach { clave ->
-                    resultados[clave] = resultadosJson.getString(clave)
+                    val valor = resultadosJson.get(clave)
+                    if (valor is JSONObject) {
+                        valor.keys().forEach { campo ->
+                            resultados["$clave - $campo"] = valor.getString(campo)
+                        }
+                    } else {
+                        resultados[clave] = resultadosJson.getString(clave)
+                    }
                 }
             }
 

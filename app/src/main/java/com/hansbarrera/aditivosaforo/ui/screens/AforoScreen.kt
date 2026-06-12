@@ -1,6 +1,8 @@
 package com.hansbarrera.aditivosaforo.ui.screens
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -38,7 +40,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.hansbarrera.aditivosaforo.AppState
 import com.hansbarrera.aditivosaforo.data.AforoRecord
@@ -50,6 +54,27 @@ import java.util.Date
 import java.util.Locale
 
 private fun fechaDeHoy(): String = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+
+/** Agrupa resultados con claves "Sección - Campo" por sección, para mostrarlos ordenados. */
+private fun agruparResultados(datos: Map<String, String>): Map<String, List<Pair<String, String>>> {
+    val grupos = LinkedHashMap<String, MutableList<Pair<String, String>>>()
+    datos.forEach { (clave, valor) ->
+        val sep = clave.indexOf(" - ")
+        val seccion = if (sep >= 0) clave.substring(0, sep) else "General"
+        val campo = if (sep >= 0) clave.substring(sep + 3) else clave
+        grupos.getOrPut(seccion) { mutableListOf() }.add(campo to valor)
+    }
+    return grupos
+}
+
+@Composable
+private fun ResultadosAgrupados(datos: Map<String, String>) {
+    agruparResultados(datos).forEach { (seccion, campos) ->
+        Text(seccion, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+        campos.forEach { (campo, valor) -> Text("  $campo: $valor") }
+        Spacer(modifier = Modifier.padding(top = 6.dp))
+    }
+}
 
 @Composable
 fun AforoScreen(appState: AppState) {
@@ -157,6 +182,32 @@ private fun NuevoRegistroTab(appState: AppState) {
         pendingCameraFile = null
     }
 
+    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { concedido ->
+        val archivo = pendingCameraFile
+        if (concedido && archivo != null) {
+            val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", archivo)
+            cameraLauncher.launch(uri)
+        } else {
+            archivo?.delete()
+            pendingCameraFile = null
+            if (!concedido) {
+                mensaje = "Se necesita el permiso de cámara para tomar fotos."
+            }
+        }
+    }
+
+    fun tomarFoto() {
+        val id = idActual()
+        val archivo = repository.nextPhotoFile(id)
+        pendingCameraFile = archivo
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", archivo)
+            cameraLauncher.launch(uri)
+        } else {
+            permissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
     val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             val id = idActual()
@@ -242,7 +293,7 @@ private fun NuevoRegistroTab(appState: AppState) {
                 style = MaterialTheme.typography.bodyMedium
             )
         } else {
-            datos.forEach { (clave, valor) -> Text("$clave: $valor") }
+            ResultadosAgrupados(datos)
         }
     }
 
@@ -252,15 +303,7 @@ private fun NuevoRegistroTab(appState: AppState) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
-                onClick = {
-                    val id = idActual()
-                    val archivo = repository.nextPhotoFile(id)
-                    pendingCameraFile = archivo
-                    val uri = FileProvider.getUriForFile(
-                        context, "${context.packageName}.fileprovider", archivo
-                    )
-                    cameraLauncher.launch(uri)
-                },
+                onClick = { tomarFoto() },
                 modifier = Modifier.weight(1f)
             ) {
                 Text("Tomar foto")
@@ -429,7 +472,7 @@ private fun HistorialTab() {
             if (record.resultados.isNotEmpty()) {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 Text("Resultados:", style = MaterialTheme.typography.labelLarge)
-                record.resultados.forEach { (clave, valor) -> Text("$clave: $valor") }
+                ResultadosAgrupados(record.resultados)
             }
 
             if (record.fotos.isNotEmpty()) {
