@@ -19,7 +19,8 @@ data class AforoRecord(
     val odometro: String,
     val observaciones: String,
     val resultados: Map<String, String> = emptyMap(),
-    val fotos: List<String> = emptyList()
+    val fotos: List<String> = emptyList(),
+    val fotoNotas: Map<String, String> = emptyMap()
 ) {
     fun toJson(): JSONObject {
         val obj = JSONObject()
@@ -38,6 +39,11 @@ data class AforoRecord(
         obj.put("resultados", resultadosJson)
 
         obj.put("fotos", JSONArray(fotos))
+
+        val fotoNotasJson = JSONObject()
+        fotoNotas.forEach { (nombre, nota) -> fotoNotasJson.put(nombre, nota) }
+        obj.put("fotoNotas", fotoNotasJson)
+
         return obj
     }
 
@@ -57,6 +63,13 @@ data class AforoRecord(
                 }
             }
 
+            val fotoNotas = mutableMapOf<String, String>()
+            obj.optJSONObject("fotoNotas")?.let { fotoNotasJson ->
+                fotoNotasJson.keys().forEach { nombre ->
+                    fotoNotas[nombre] = fotoNotasJson.getString(nombre)
+                }
+            }
+
             return AforoRecord(
                 id = obj.getString("id"),
                 fecha = obj.optString("fecha"),
@@ -68,7 +81,8 @@ data class AforoRecord(
                 odometro = obj.optString("odometro"),
                 observaciones = obj.optString("observaciones"),
                 resultados = resultados,
-                fotos = fotos
+                fotos = fotos,
+                fotoNotas = fotoNotas
             )
         }
     }

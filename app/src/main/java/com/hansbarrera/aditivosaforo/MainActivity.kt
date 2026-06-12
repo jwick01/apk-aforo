@@ -2,6 +2,7 @@ package com.hansbarrera.aditivosaforo
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -40,19 +42,27 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AditivosAforoTheme {
-                Surface(modifier = Modifier) {
-                    AppNavigation()
-                }
-            }
+            AppRoot()
         }
     }
 }
 
 @Composable
-private fun AppNavigation() {
+private fun AppRoot() {
+    val context = LocalContext.current
+    val appState = remember { AppState(context) }
+    val darkTheme = appState.temaOscuro.value ?: isSystemInDarkTheme()
+
+    AditivosAforoTheme(darkTheme = darkTheme) {
+        Surface(modifier = Modifier) {
+            AppNavigation(appState)
+        }
+    }
+}
+
+@Composable
+private fun AppNavigation(appState: AppState) {
     val navController = rememberNavController()
-    val appState = remember { AppState() }
 
     Scaffold(
         bottomBar = {
@@ -89,7 +99,7 @@ private fun AppNavigation() {
             composable("verificacion") { VerificacionScreen(appState) }
             composable("potenciometro") { PotenciometroScreen(appState) }
             composable("aforo") { AforoScreen(appState) }
-            composable("acerca") { AcercaDeScreen() }
+            composable("acerca") { AcercaDeScreen(appState) }
         }
     }
 }

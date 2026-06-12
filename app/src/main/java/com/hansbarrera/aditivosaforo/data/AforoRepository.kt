@@ -23,6 +23,26 @@ class AforoRepository(private val context: Context) {
 
     private fun datosFile(id: String): File = File(recordDir(id), "datos.json")
 
+    private val borradorFile: File
+        get() = File(context.filesDir, "borrador_aforo.json")
+
+    /** Guarda el formulario en curso como borrador, para no perderlo si se cierra la app. */
+    fun saveDraft(record: AforoRecord) {
+        borradorFile.writeText(record.toJson().toString(2))
+    }
+
+    /** Recupera el borrador guardado, si existe. */
+    fun loadDraft(): AforoRecord? {
+        val file = borradorFile
+        if (!file.exists()) return null
+        return AforoRecord.fromJson(JSONObject(file.readText()))
+    }
+
+    /** Elimina el borrador, por ejemplo tras guardar el registro definitivo. */
+    fun clearDraft() {
+        borradorFile.delete()
+    }
+
     /** IDs de registros existentes, más recientes primero. */
     fun listIds(): List<String> {
         return baseDir.listFiles { f -> f.isDirectory }

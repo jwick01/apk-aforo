@@ -16,18 +16,31 @@ de shotcrete, hecha por **Hans Barrera**. Funciona **100% sin conexión**
    lecturas reales del equipo y muestra las desviaciones (%).
 4. **Posición del potenciómetro**: calcula el acelerante requerido según diseño
    e interpola la posición del potenciómetro a partir de una tabla de
-   calibración editable, con gráfico de la curva.
+   calibración editable, con un gráfico de la curva (eje X = posición del
+   potenciómetro, eje Y = acelerante en kg/min) cuyos valores se actualizan
+   dinámicamente según la tabla.
 
 Las fórmulas replican exactamente las de la hoja de cálculo original
 (`aditivos y envoladas`, `display`, `tablas para generar informe`).
+
+Cada calculadora tiene botones para "usar"/"guardar" sus resultados: además
+de pasar valores entre pantallas, estos botones guardan todos los datos de
+entrada y salida en el registro de aforo, para que queden disponibles al
+generar el informe.
 
 ## Registro de aforo
 
 La pestaña **Aforo** permite guardar, para cada trabajo, los datos generales
 (fecha, cliente, proyecto o mina, lugar del aforo, operador, número de equipo,
-odómetro y observaciones), un resumen de los resultados calculados en las
-otras pestañas (botones "Usar este resultado...") y fotografías tomadas con
-la cámara o cargadas desde la galería.
+odómetro y observaciones), todos los datos de entrada y resultados calculados
+en las otras pestañas (botones "Usar este resultado..." / "Guardar estos
+datos...") y fotografías tomadas con la cámara o cargadas desde la galería,
+cada una con una nota/pie de foto opcional para indicar qué muestra.
+
+Mientras se completa el formulario, los datos se guardan automáticamente
+como **borrador temporal** en el dispositivo, de modo que si la app se cierra
+o se quita de las apps recientes antes de presionar "Guardar registro", al
+volver a abrirla se recuperan los datos ingresados.
 
 Cada registro se guarda localmente en el dispositivo con un ID correlativo
 (`AFORO-aaaa-mm-dd-NNN`) y sus fotos numeradas de forma correlativa
@@ -59,6 +72,12 @@ siempre que tengas el SDK de Android instalado:
 ```
 
 El APK queda en `app/build/outputs/apk/debug/app-debug.apk`.
+
+## Apariencia
+
+En la pestaña **Acerca de** se puede elegir el tema de la app: seguir el
+tema del sistema, claro u **oscuro**. El tema oscuro es útil para trabajos
+con poca iluminación, por ejemplo dentro de túneles.
 
 ## Seguridad
 

@@ -114,6 +114,26 @@ fun VerificacionScreen(appState: AppState) {
             ResultRow("Caudal de aditivo", resultado.desviacionCaudalAditivo * 100.0, "%", decimals = 2)
             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
             ResultRow("Porcentaje de aditivo", resultado.desviacionPorcentajeAditivo * 100.0, "%", decimals = 2)
+
+            Spacer(modifier = Modifier.padding(top = 8.dp))
+            OutlinedButton(
+                onClick = {
+                    appState.registrarDatos(mapOf(
+                        "Verificación - Rendimiento calculado (m3/hr)" to rendimientoCalculado,
+                        "Verificación - Rendimiento según display (m3/hr)" to rendimientoDisplay,
+                        "Verificación - Caudal de aditivo calculado (lts/min)" to aditivoCalculado,
+                        "Verificación - Aditivo según display (lts/min)" to aditivoDisplay,
+                        "Verificación - Porcentaje calculado" to porcentajeCalculado,
+                        "Verificación - Porcentaje según display" to porcentajeDisplay,
+                        "Verificación - Desviación caudal de hormigón (%)" to formatNumber(resultado.desviacionCaudalHormigon * 100.0, 2),
+                        "Verificación - Desviación caudal de aditivo (%)" to formatNumber(resultado.desviacionCaudalAditivo * 100.0, 2),
+                        "Verificación - Desviación porcentaje de aditivo (%)" to formatNumber(resultado.desviacionPorcentajeAditivo * 100.0, 2)
+                    ))
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Guardar estos datos en el registro de aforo")
+            }
         }
     }
 }

@@ -1,12 +1,16 @@
 package com.hansbarrera.aditivosaforo
 
+import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 
 /**
- * Resultados compartidos entre calculadoras, para evitar tener que
- * volver a teclear valores ya calculados en otra pantalla.
+ * Estado compartido entre pantallas: resultados recientes para "traer" valores
+ * de una calculadora a otra, datos acumulados para el registro de aforo y
+ * preferencias de apariencia persistidas en SharedPreferences.
  */
-class AppState {
+class AppState(context: Context) {
+    private val prefs = context.applicationContext.getSharedPreferences("ajustes", Context.MODE_PRIVATE)
+
     /** Último rendimiento de la bomba calculado (m3/hr). */
     val rendimientoM3Hr = mutableStateOf<Double?>(null)
 
@@ -16,9 +20,36 @@ class AppState {
     /** Último porcentaje de aditivo calculado. */
     val porcentajeAditivoCalculado = mutableStateOf<Double?>(null)
 
-    /** Última cantidad de acelerante requerida (kg/min), para la pestaña del potenciómetro. */
-    val aceleranteRequeridoKgMin = mutableStateOf<Double?>(null)
+    /**
+     * Datos de entrada y resultados acumulados desde las distintas calculadoras
+     * (clave legible -> valor), para incluir automáticamente en el registro de
+     * aforo y, desde ahí, en el informe.
+     */
+    val datosInforme = mutableStateOf<Map<String, String>>(emptyMap())
 
-    /** Última posición interpolada del potenciómetro, para incluir en el registro de aforo. */
-    val posicionPotenciometro = mutableStateOf<Double?>(null)
+    /** Tema: null = seguir al sistema, true = forzar oscuro, false = forzar claro. */
+    val temaOscuro = mutableStateOf<Boolean?>(
+        when (prefs.getInt("tema_oscuro", -1)) {
+            1 -> true
+            0 -> false
+            else -> null
+        }
+    )
+
+    fun registrarDatos(nuevos: Map<String, String>) {
+        datosInforme.value = datosInforme.value + nuevos
+    }
+
+    fun limpiarDatosInforme() {
+        datosInforme.value = emptyMap()
+    }
+
+    fun setTemaOscuro(valor: Boolean?) {
+        temaOscuro.value = valor
+        prefs.edit().putInt("tema_oscuro", when (valor) {
+            true -> 1
+            false -> 0
+            null -> -1
+        }).apply()
+    }
 }

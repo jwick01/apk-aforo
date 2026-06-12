@@ -27,6 +27,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +44,6 @@ import com.hansbarrera.aditivosaforo.AppState
 import com.hansbarrera.aditivosaforo.data.AforoRecord
 import com.hansbarrera.aditivosaforo.data.AforoRepository
 import com.hansbarrera.aditivosaforo.ui.components.SectionCard
-import com.hansbarrera.aditivosaforo.ui.components.formatNumber
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -83,20 +83,61 @@ fun AforoScreen(appState: AppState) {
 private fun NuevoRegistroTab(appState: AppState) {
     val context = LocalContext.current
     val repository = remember { AforoRepository(context) }
+    val draft = remember { repository.loadDraft() }
 
-    var recordId by rememberSaveable { mutableStateOf<String?>(null) }
-    var fecha by rememberSaveable { mutableStateOf(fechaDeHoy()) }
-    var cliente by rememberSaveable { mutableStateOf("") }
-    var proyectoOMina by rememberSaveable { mutableStateOf("") }
-    var lugarAforo by rememberSaveable { mutableStateOf("") }
-    var operador by rememberSaveable { mutableStateOf("") }
-    var numeroEquipo by rememberSaveable { mutableStateOf("") }
-    var odometro by rememberSaveable { mutableStateOf("") }
-    var observaciones by rememberSaveable { mutableStateOf("") }
+    var recordId by rememberSaveable { mutableStateOf(draft?.id?.takeIf { it.isNotBlank() }) }
+    var fecha by rememberSaveable { mutableStateOf(draft?.fecha?.takeIf { it.isNotBlank() } ?: fechaDeHoy()) }
+    var cliente by rememberSaveable { mutableStateOf(draft?.cliente ?: "") }
+    var proyectoOMina by rememberSaveable { mutableStateOf(draft?.proyectoOMina ?: "") }
+    var lugarAforo by rememberSaveable { mutableStateOf(draft?.lugarAforo ?: "") }
+    var operador by rememberSaveable { mutableStateOf(draft?.operador ?: "") }
+    var numeroEquipo by rememberSaveable { mutableStateOf(draft?.numeroEquipo ?: "") }
+    var odometro by rememberSaveable { mutableStateOf(draft?.odometro ?: "") }
+    var observaciones by rememberSaveable { mutableStateOf(draft?.observaciones ?: "") }
 
-    var fotos by rememberSaveable { mutableStateOf<List<String>>(emptyList()) }
+    var fotos by rememberSaveable { mutableStateOf(draft?.fotos ?: emptyList()) }
+    var fotoNotas by rememberSaveable { mutableStateOf(draft?.fotoNotas ?: emptyMap()) }
     var mensaje by rememberSaveable { mutableStateOf<String?>(null) }
     var pendingCameraFile by remember { mutableStateOf<File?>(null) }
+
+    // Restaura, al entrar a la pantalla, los datos de cálculo guardados en el borrador.
+    LaunchedEffect(Unit) {
+        draft?.resultados?.takeIf { it.isNotEmpty() }?.let { appState.registrarDatos(it) }
+    }
+
+    // Guarda automáticamente como borrador mientras se completa el formulario, para no
+    // perder los datos si la app se cierra antes de presionar "Guardar registro".
+    LaunchedEffect(
+        fecha, cliente, proyectoOMina, lugarAforo, operador, numeroEquipo, odometro, observaciones,
+        fotos, fotoNotas, recordId, appState.datosInforme.value
+    ) {
+        val vacio = recordId == null &&
+            fecha == fechaDeHoy() &&
+            cliente.isBlank() && proyectoOMina.isBlank() && lugarAforo.isBlank() &&
+            operador.isBlank() && numeroEquipo.isBlank() && odometro.isBlank() && observaciones.isBlank() &&
+            fotos.isEmpty() && appState.datosInforme.value.isEmpty()
+
+        if (vacio) {
+            repository.clearDraft()
+        } else {
+            repository.saveDraft(
+                AforoRecord(
+                    id = recordId ?: "",
+                    fecha = fecha,
+                    cliente = cliente,
+                    proyectoOMina = proyectoOMina,
+                    lugarAforo = lugarAforo,
+                    operador = operador,
+                    numeroEquipo = numeroEquipo,
+                    odometro = odometro,
+                    observaciones = observaciones,
+                    resultados = appState.datosInforme.value,
+                    fotos = fotos,
+                    fotoNotas = fotoNotas
+                )
+            )
+        }
+    }
 
     fun idActual(): String {
         val existente = recordId
@@ -193,26 +234,15 @@ private fun NuevoRegistroTab(appState: AppState) {
     }
 
     SectionCard("Resultados guardados") {
-        val rendimiento = appState.rendimientoM3Hr.value
-        val caudalAditivo = appState.caudalAditivoLtsMin.value
-        val porcentajeAditivo = appState.porcentajeAditivoCalculado.value
-        val acelerante = appState.aceleranteRequeridoKgMin.value
-        val posicion = appState.posicionPotenciometro.value
-
-        if (rendimiento == null && caudalAditivo == null && porcentajeAditivo == null &&
-            acelerante == null && posicion == null
-        ) {
+        val datos = appState.datosInforme.value
+        if (datos.isEmpty()) {
             Text(
-                "Aún no hay resultados guardados. Usa los botones \"Usar este resultado...\" " +
-                    "en las otras pestañas para traerlos aquí.",
+                "Aún no hay datos guardados. Usa los botones \"Usar este resultado...\" o " +
+                    "\"Guardar estos datos...\" en las otras pestañas para traerlos aquí.",
                 style = MaterialTheme.typography.bodyMedium
             )
         } else {
-            rendimiento?.let { Text("Rendimiento de la bomba: ${formatNumber(it)} m3/hr") }
-            caudalAditivo?.let { Text("Caudal de aditivo: ${formatNumber(it)} lts/min") }
-            porcentajeAditivo?.let { Text("Porcentaje de aditivo: ${formatNumber(it)}") }
-            acelerante?.let { Text("Acelerante requerido: ${formatNumber(it)} kg/min") }
-            posicion?.let { Text("Posición del potenciómetro: ${formatNumber(it, 2)}") }
+            datos.forEach { (clave, valor) -> Text("$clave: $valor") }
         }
     }
 
@@ -254,7 +284,7 @@ private fun NuevoRegistroTab(appState: AppState) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp),
+                        .padding(top = 4.dp),
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -266,10 +296,19 @@ private fun NuevoRegistroTab(appState: AppState) {
                     OutlinedButton(onClick = {
                         recordId?.let { repository.deletePhoto(it, nombre) }
                         fotos = fotos - nombre
+                        fotoNotas = fotoNotas - nombre
                     }) {
                         Text("Quitar")
                     }
                 }
+                OutlinedTextField(
+                    value = fotoNotas[nombre] ?: "",
+                    onValueChange = { fotoNotas = fotoNotas + (nombre to it) },
+                    label = { Text("Nota / pie de foto") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp, bottom = 4.dp)
+                )
             }
         }
     }
@@ -283,13 +322,6 @@ private fun NuevoRegistroTab(appState: AppState) {
         Button(
             onClick = {
                 val id = idActual()
-                val resultados = buildMap {
-                    appState.rendimientoM3Hr.value?.let { put("Rendimiento de la bomba (m3/hr)", formatNumber(it, 6)) }
-                    appState.caudalAditivoLtsMin.value?.let { put("Caudal de aditivo (lts/min)", formatNumber(it, 6)) }
-                    appState.porcentajeAditivoCalculado.value?.let { put("Porcentaje de aditivo", formatNumber(it, 6)) }
-                    appState.aceleranteRequeridoKgMin.value?.let { put("Acelerante requerido (kg/min)", formatNumber(it, 6)) }
-                    appState.posicionPotenciometro.value?.let { put("Posición del potenciómetro", formatNumber(it, 6)) }
-                }
                 repository.save(
                     AforoRecord(
                         id = id,
@@ -301,10 +333,13 @@ private fun NuevoRegistroTab(appState: AppState) {
                         numeroEquipo = numeroEquipo,
                         odometro = odometro,
                         observaciones = observaciones,
-                        resultados = resultados,
-                        fotos = fotos
+                        resultados = appState.datosInforme.value,
+                        fotos = fotos,
+                        fotoNotas = fotoNotas
                     )
                 )
+                appState.limpiarDatosInforme()
+                repository.clearDraft()
                 mensaje = "Registro guardado: $id"
             },
             modifier = Modifier.fillMaxWidth()
@@ -347,6 +382,9 @@ private fun NuevoRegistroTab(appState: AppState) {
                 odometro = ""
                 observaciones = ""
                 fotos = emptyList()
+                fotoNotas = emptyMap()
+                appState.limpiarDatosInforme()
+                repository.clearDraft()
                 mensaje = null
             },
             modifier = Modifier.fillMaxWidth()
@@ -398,9 +436,18 @@ private fun HistorialTab() {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 Text("${record.fotos.size} foto(s)", style = MaterialTheme.typography.labelLarge)
                 Spacer(modifier = Modifier.padding(top = 4.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    record.fotos.forEach { nombre ->
+                record.fotos.forEach { nombre ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         FotoThumbnail(repository.photoFile(record.id, nombre))
+                        val nota = record.fotoNotas[nombre]
+                        Text(
+                            if (nota.isNullOrBlank()) nombre else "$nombre: $nota",
+                            modifier = Modifier.weight(1f)
+                        )
                     }
                 }
             }

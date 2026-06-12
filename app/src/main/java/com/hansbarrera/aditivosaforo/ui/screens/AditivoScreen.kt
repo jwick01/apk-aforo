@@ -86,6 +86,14 @@ fun AditivoScreen(appState: AppState) {
                 onClick = {
                     appState.caudalAditivoLtsMin.value = resultado.litrosAditivoLtsMin
                     appState.porcentajeAditivoCalculado.value = porcentajeAditivo.toDoubleOrZero()
+                    appState.registrarDatos(mapOf(
+                        "Aditivo - Rendimiento de la bomba (m3/hr)" to rendimiento,
+                        "Aditivo - Dosis de cemento (kg/m3)" to dosisCemento,
+                        "Aditivo - Porcentaje de aditivo" to porcentajeAditivo,
+                        "Aditivo - Densidad del aditivo (kg/lt)" to densidadAditivo,
+                        "Aditivo - Kilos de aditivo requerido (kg/min)" to formatNumber(resultado.kilosAditivoKgMin, 6),
+                        "Aditivo - Litros de aditivo (lts/min)" to formatNumber(resultado.litrosAditivoLtsMin, 6)
+                    ))
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {

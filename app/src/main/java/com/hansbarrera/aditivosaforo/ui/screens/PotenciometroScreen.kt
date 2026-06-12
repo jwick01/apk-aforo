@@ -84,7 +84,11 @@ fun PotenciometroScreen(appState: AppState) {
             OutlinedButton(
                 onClick = {
                     objetivoManual = formatNumber(aceleranteCalculado, 6)
-                    appState.aceleranteRequeridoKgMin.value = aceleranteCalculado
+                    appState.registrarDatos(mapOf(
+                        "Potenciómetro - Cantidad de cemento (kg/m3)" to cementoPorM3,
+                        "Potenciómetro - Porcentaje de acelerante requerido" to porcentajeAcelerante,
+                        "Potenciómetro - Acelerante requerido (kg/min)" to formatNumber(aceleranteCalculado, 6)
+                    ))
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -137,7 +141,16 @@ fun PotenciometroScreen(appState: AppState) {
                 ResultRow("Posición del potenciómetro", posicion, "", decimals = 2)
                 Spacer(modifier = Modifier.padding(top = 8.dp))
                 OutlinedButton(
-                    onClick = { appState.posicionPotenciometro.value = posicion },
+                    onClick = {
+                        val tablaTexto = tabla.filter { it.aceleranteKgMin > 0.0 }
+                            .sortedBy { it.potenciometro }
+                            .joinToString("; ") { "${formatNumber(it.potenciometro, 2)} -> ${formatNumber(it.aceleranteKgMin, 2)} kg/min" }
+                        appState.registrarDatos(mapOf(
+                            "Potenciómetro - Tabla de calibración" to tablaTexto,
+                            "Potenciómetro - Acelerante objetivo (kg/min)" to objetivoManual,
+                            "Potenciómetro - Posición interpolada" to formatNumber(posicion, 6)
+                        ))
+                    },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Usar esta posición en el registro de aforo")
