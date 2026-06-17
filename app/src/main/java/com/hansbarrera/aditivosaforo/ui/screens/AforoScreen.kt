@@ -20,7 +20,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -28,6 +32,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,8 +60,24 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 private fun fechaDeHoy(): String = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+
+/** Convierte "yyyy-MM-dd" a millis UTC de medianoche, para inicializar el DatePicker. */
+private fun fechaAMillisUtc(fecha: String): Long? = try {
+    SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }.parse(fecha)?.time
+} catch (e: Exception) {
+    null
+}
+
+/** Convierte los millis UTC que entrega el DatePicker de vuelta a "yyyy-MM-dd". */
+private fun millisUtcAFecha(millis: Long): String =
+    SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }.format(Date(millis))
 
 /** Agrupa resultados con claves "Sección - Campo" por sección, para mostrarlos ordenados. */
 private fun agruparResultados(datos: Map<String, String>): Map<String, List<Pair<String, String>>> {
@@ -106,6 +128,7 @@ fun AforoScreen(appState: AppState) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NuevoRegistroTab(appState: AppState) {
     val context = LocalContext.current
@@ -126,6 +149,8 @@ private fun NuevoRegistroTab(appState: AppState) {
     var fotoNotas by rememberSaveable { mutableStateOf(draft?.fotoNotas ?: emptyMap()) }
     var mensaje by rememberSaveable { mutableStateOf<String?>(null) }
     var pendingCameraFile by remember { mutableStateOf<File?>(null) }
+    var showDatePicker by rememberSaveable { mutableStateOf(false) }
+    var showConfirmReset by rememberSaveable { mutableStateOf(false) }
 
     val msgPermisoCamara = stringResource(R.string.msg_permiso_camara)
     val msgRegistroGuardado = stringResource(R.string.msg_registro_guardado)
@@ -226,14 +251,86 @@ private fun NuevoRegistroTab(appState: AppState) {
         }
     }
 
-    SectionCard(stringResource(R.string.section_datos_trabajo)) {
-        OutlinedTextField(
-            value = fecha,
-            onValueChange = { fecha = it },
-            label = { Text(stringResource(R.string.label_fecha)) },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+    OutlinedButton(
+        onClick = { showConfirmReset = true },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(stringResource(R.string.btn_nuevo_aforo))
+    }
+    Spacer(modifier = Modifier.padding(top = 12.dp))
+
+    if (showConfirmReset) {
+        AlertDialog(
+            onDismissRequest = { showConfirmReset = false },
+            title = { Text(stringResource(R.string.dialog_confirmar_nuevo_aforo_titulo)) },
+            text = { Text(stringResource(R.string.dialog_confirmar_nuevo_aforo_mensaje)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    recordId = null
+                    fecha = fechaDeHoy()
+                    cliente = ""
+                    proyectoOMina = ""
+                    lugarAforo = ""
+                    operador = ""
+                    numeroEquipo = ""
+                    odometro = ""
+                    observaciones = ""
+                    fotos = emptyList()
+                    fotoNotas = emptyMap()
+                    mensaje = null
+                    appState.reiniciarTodo()
+                    repository.clearDraft()
+                    showConfirmReset = false
+                }) {
+                    Text(stringResource(R.string.btn_si_borrar_todo))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirmReset = false }) {
+                    Text(stringResource(R.string.btn_cancelar))
+                }
+            }
         )
+    }
+
+    SectionCard(stringResource(R.string.section_datos_trabajo)) {
+        Row(
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            OutlinedTextField(
+                value = fecha,
+                onValueChange = { fecha = it },
+                label = { Text(stringResource(R.string.label_fecha)) },
+                singleLine = true,
+                modifier = Modifier.weight(1f)
+            )
+            OutlinedButton(onClick = { showDatePicker = true }) {
+                Text(stringResource(R.string.btn_elegir_fecha))
+            }
+        }
+
+        if (showDatePicker) {
+            val datePickerState = rememberDatePickerState(initialSelectedDateMillis = fechaAMillisUtc(fecha))
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        datePickerState.selectedDateMillis?.let { millis -> fecha = millisUtcAFecha(millis) }
+                        showDatePicker = false
+                    }) {
+                        Text(stringResource(R.string.btn_aceptar))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDatePicker = false }) {
+                        Text(stringResource(R.string.btn_cancelar))
+                    }
+                }
+            ) {
+                DatePicker(state = datePickerState)
+            }
+        }
         Spacer(modifier = Modifier.padding(top = 8.dp))
         OutlinedTextField(
             value = cliente,
@@ -416,29 +513,6 @@ private fun NuevoRegistroTab(appState: AppState) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.btn_exportar_compartir))
-        }
-
-        Spacer(modifier = Modifier.padding(top = 8.dp))
-        OutlinedButton(
-            onClick = {
-                recordId = null
-                fecha = fechaDeHoy()
-                cliente = ""
-                proyectoOMina = ""
-                lugarAforo = ""
-                operador = ""
-                numeroEquipo = ""
-                odometro = ""
-                observaciones = ""
-                fotos = emptyList()
-                fotoNotas = emptyMap()
-                appState.limpiarDatosInforme()
-                repository.clearDraft()
-                mensaje = null
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.btn_limpiar_formulario))
         }
 
         mensaje?.let {

@@ -31,11 +31,11 @@ import com.hansbarrera.aditivosaforo.ui.theme.AditivosAforoTheme
 private data class Destino(val ruta: String, val etiqueta: Int, val emoji: String)
 
 private val destinos = listOf(
+    Destino("aforo", R.string.nav_aforo, "📋"),
     Destino("rendimiento", R.string.nav_rendimiento, "⚙"),
     Destino("aditivo", R.string.nav_aditivo, "🧪"),
     Destino("verificacion", R.string.nav_verificacion, "📊"),
     Destino("potenciometro", R.string.nav_potenciometro, "🎛"),
-    Destino("aforo", R.string.nav_aforo, "📋"),
     Destino("acerca", R.string.nav_acerca, "ℹ")
 )
 
@@ -92,7 +92,7 @@ private fun AppNavigation(appState: AppState) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "rendimiento",
+            startDestination = "aforo",
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("rendimiento") { RendimientoScreen(appState) }

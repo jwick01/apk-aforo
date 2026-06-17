@@ -34,10 +34,11 @@ import com.hansbarrera.aditivosaforo.ui.components.toDoubleOrZero
 
 @Composable
 fun AditivoScreen(appState: AppState) {
-    var rendimiento by rememberSaveable { mutableStateOf("") }
-    var dosisCemento by rememberSaveable { mutableStateOf("400") }
-    var porcentajeAditivo by rememberSaveable { mutableStateOf("0.08") }
-    var densidadAditivo by rememberSaveable { mutableStateOf(Presets.DENSIDAD_ADITIVO_DEFAULT.toString()) }
+    val resetKey = appState.formResetTrigger.value
+    var rendimiento by rememberSaveable(resetKey) { mutableStateOf("") }
+    var dosisCemento by rememberSaveable(resetKey) { mutableStateOf("400") }
+    var porcentajeAditivo by rememberSaveable(resetKey) { mutableStateOf("0.08") }
+    var densidadAditivo by rememberSaveable(resetKey) { mutableStateOf(Presets.DENSIDAD_ADITIVO_DEFAULT.toString()) }
 
     Column(
         modifier = Modifier

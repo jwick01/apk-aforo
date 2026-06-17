@@ -35,12 +35,13 @@ import com.hansbarrera.aditivosaforo.ui.components.toDoubleOrZero
 
 @Composable
 fun PotenciometroScreen(appState: AppState) {
-    var rendimiento by rememberSaveable { mutableStateOf("") }
-    var cementoPorM3 by rememberSaveable { mutableStateOf("420") }
-    var porcentajeAcelerante by rememberSaveable { mutableStateOf("0.08") }
-    var objetivoManual by rememberSaveable { mutableStateOf("") }
+    val resetKey = appState.formResetTrigger.value
+    var rendimiento by rememberSaveable(resetKey) { mutableStateOf("") }
+    var cementoPorM3 by rememberSaveable(resetKey) { mutableStateOf("420") }
+    var porcentajeAcelerante by rememberSaveable(resetKey) { mutableStateOf("0.08") }
+    var objetivoManual by rememberSaveable(resetKey) { mutableStateOf("") }
 
-    val filasPotenciometro = remember {
+    val filasPotenciometro = remember(resetKey) {
         Presets.tablaPotenciometroDefault.map {
             mutableStateOf(it.first.toString()) to mutableStateOf(it.second.toString())
         }

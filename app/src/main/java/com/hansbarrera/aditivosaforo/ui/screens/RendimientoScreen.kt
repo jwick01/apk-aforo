@@ -67,11 +67,12 @@ fun RendimientoScreen(appState: AppState) {
 
 @Composable
 private fun RendimientoPorEmboladas(appState: AppState) {
-    var presetIndex by rememberSaveable { mutableStateOf(2) } // Alpha 30 por defecto
+    val resetKey = appState.formResetTrigger.value
+    var presetIndex by rememberSaveable(resetKey) { mutableStateOf(2) } // Alpha 30 por defecto
 
-    var volumenCilindro by rememberSaveable { mutableStateOf(Presets.bombas[presetIndex].volumenCilindroLts.toString()) }
-    var emboladas by rememberSaveable { mutableStateOf("12") }
-    var factorLlenado by rememberSaveable { mutableStateOf(Presets.FACTOR_LLENADO_DEFAULT.toString()) }
+    var volumenCilindro by rememberSaveable(resetKey) { mutableStateOf(Presets.bombas[presetIndex].volumenCilindroLts.toString()) }
+    var emboladas by rememberSaveable(resetKey) { mutableStateOf("12") }
+    var factorLlenado by rememberSaveable(resetKey) { mutableStateOf(Presets.FACTOR_LLENADO_DEFAULT.toString()) }
 
     SectionCard(stringResource(R.string.section_datos_bomba)) {
         Text(stringResource(R.string.label_tipo_bomba), style = MaterialTheme.typography.labelLarge)
@@ -157,8 +158,9 @@ private fun RendimientoPorEmboladas(appState: AppState) {
 
 @Composable
 private fun RendimientoPorTiempoLlenado(appState: AppState) {
-    var tiempoLlenado by rememberSaveable { mutableStateOf("80") }
-    var volumenLlenado by rememberSaveable { mutableStateOf("0.2") }
+    val resetKey = appState.formResetTrigger.value
+    var tiempoLlenado by rememberSaveable(resetKey) { mutableStateOf("80") }
+    var volumenLlenado by rememberSaveable(resetKey) { mutableStateOf("0.2") }
 
     SectionCard(stringResource(R.string.section_datos_llenado)) {
         NumberField(stringResource(R.string.label_tiempo_llenado), tiempoLlenado, { tiempoLlenado = it }, unit = "seg", step = 1.0, decimals = 0)

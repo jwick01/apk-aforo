@@ -104,7 +104,13 @@
     <string name="msg_guarda_antes_exportar">Save the record before exporting it.</string>
     <string name="chooser_compartir_registro">Share survey record</string>
     <string name="btn_exportar_compartir">Export and share</string>
-    <string name="btn_limpiar_formulario">Clear form (new record)</string>
+    <string name="btn_nuevo_aforo">Clear everything and start a new survey</string>
+    <string name="dialog_confirmar_nuevo_aforo_titulo">Start a new survey?</string>
+    <string name="dialog_confirmar_nuevo_aforo_mensaje">This will clear all data entered in this record and in the other calculators (flow rate, additive, verification, potentiometer). This action cannot be undone.</string>
+    <string name="btn_si_borrar_todo">Yes, clear everything</string>
+    <string name="btn_cancelar">Cancel</string>
+    <string name="btn_aceptar">OK</string>
+    <string name="btn_elegir_fecha">📅 Pick date</string>
     <string name="msg_permiso_camara">Camera permission is needed to take photos.</string>
     <string name="msg_no_registros">No saved records yet. Create one in the "New record" tab.</string>
     <string name="historial_fecha">Date: %1$s</string>

@@ -32,12 +32,13 @@ import com.hansbarrera.aditivosaforo.ui.components.toDoubleOrZero
 
 @Composable
 fun VerificacionScreen(appState: AppState) {
-    var rendimientoCalculado by rememberSaveable { mutableStateOf("") }
-    var rendimientoDisplay by rememberSaveable { mutableStateOf("") }
-    var aditivoCalculado by rememberSaveable { mutableStateOf("") }
-    var aditivoDisplay by rememberSaveable { mutableStateOf("") }
-    var porcentajeCalculado by rememberSaveable { mutableStateOf("") }
-    var porcentajeDisplay by rememberSaveable { mutableStateOf("") }
+    val resetKey = appState.formResetTrigger.value
+    var rendimientoCalculado by rememberSaveable(resetKey) { mutableStateOf("") }
+    var rendimientoDisplay by rememberSaveable(resetKey) { mutableStateOf("") }
+    var aditivoCalculado by rememberSaveable(resetKey) { mutableStateOf("") }
+    var aditivoDisplay by rememberSaveable(resetKey) { mutableStateOf("") }
+    var porcentajeCalculado by rememberSaveable(resetKey) { mutableStateOf("") }
+    var porcentajeDisplay by rememberSaveable(resetKey) { mutableStateOf("") }
 
     Column(
         modifier = Modifier

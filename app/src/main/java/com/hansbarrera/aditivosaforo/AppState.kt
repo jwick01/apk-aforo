@@ -36,12 +36,28 @@ class AppState(context: Context) {
         }
     )
 
+    /**
+     * Se incrementa cada vez que se borra todo para comenzar un nuevo aforo.
+     * Las pantallas usan este valor como key de rememberSaveable para que sus
+     * campos vuelvan a los valores por defecto en vez de quedar en caché.
+     */
+    val formResetTrigger = mutableStateOf(0)
+
     fun registrarDatos(nuevos: Map<String, String>) {
         datosInforme.value = datosInforme.value + nuevos
     }
 
     fun limpiarDatosInforme() {
         datosInforme.value = emptyMap()
+    }
+
+    /** Borra todos los datos acumulados de las calculadoras y fuerza a las pantallas a reiniciar sus campos. */
+    fun reiniciarTodo() {
+        datosInforme.value = emptyMap()
+        rendimientoM3Hr.value = null
+        caudalAditivoLtsMin.value = null
+        porcentajeAditivoCalculado.value = null
+        formResetTrigger.value++
     }
 
     fun setTemaOscuro(valor: Boolean?) {

@@ -106,7 +106,13 @@
     <string name="msg_guarda_antes_exportar">Guarda el registro antes de exportarlo.</string>
     <string name="chooser_compartir_registro">Compartir registro de aforo</string>
     <string name="btn_exportar_compartir">Exportar y compartir</string>
-    <string name="btn_limpiar_formulario">Limpiar formulario (nuevo registro)</string>
+    <string name="btn_nuevo_aforo">Borrar todo y comenzar nuevo aforo</string>
+    <string name="dialog_confirmar_nuevo_aforo_titulo">¿Comenzar un nuevo aforo?</string>
+    <string name="dialog_confirmar_nuevo_aforo_mensaje">Esto borrará todos los datos ingresados en este registro y en las demás calculadoras (rendimiento, aditivo, verificación, potenciómetro). Esta acción no se puede deshacer.</string>
+    <string name="btn_si_borrar_todo">Sí, borrar todo</string>
+    <string name="btn_cancelar">Cancelar</string>
+    <string name="btn_aceptar">Aceptar</string>
+    <string name="btn_elegir_fecha">📅 Elegir fecha</string>
     <string name="msg_permiso_camara">Se necesita el permiso de cámara para tomar fotos.</string>
     <string name="msg_no_registros">Aún no hay registros guardados. Crea uno en la pestaña "Nuevo registro".</string>
     <string name="historial_fecha">Fecha: %1$s</string>
