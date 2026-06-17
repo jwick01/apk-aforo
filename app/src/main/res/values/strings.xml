@@ -91,8 +91,6 @@
     <string name="label_numero_equipo">Número de equipo</string>
     <string name="label_odometro">Odómetro</string>
     <string name="label_observaciones">Observaciones</string>
-    <string name="section_resultados_guardados">Resultados guardados</string>
-    <string name="msg_no_datos_guardados">Aún no hay datos guardados. Usa los botones "Usar este resultado..." o "Guardar estos datos..." en las otras pestañas para traerlos aquí.</string>
     <string name="section_fotografias">Fotografías</string>
     <string name="btn_tomar_foto">Tomar foto</string>
     <string name="btn_cargar_imagen">Cargar imagen</string>
@@ -115,6 +113,8 @@
     <string name="btn_elegir_fecha">📅 Elegir fecha</string>
     <string name="msg_permiso_camara">Se necesita el permiso de cámara para tomar fotos.</string>
     <string name="msg_no_registros">Aún no hay registros guardados. Crea uno en la pestaña "Nuevo registro".</string>
+    <string name="btn_importar_informe">Importar informe (.zip)</string>
+    <string name="msg_error_importar">No se pudo importar el archivo. Verifica que sea un .zip exportado desde esta app.</string>
     <string name="historial_fecha">Fecha: %1$s</string>
     <string name="historial_cliente">Cliente: %1$s</string>
     <string name="historial_proyecto">Proyecto o mina: %1$s</string>
@@ -135,6 +135,10 @@
     <string name="chip_seguir_sistema">Seguir sistema</string>
     <string name="chip_claro">Claro</string>
     <string name="chip_oscuro">Oscuro</string>
+    <string name="section_idioma">Idioma</string>
+    <string name="desc_idioma">Elige el idioma de la aplicación.</string>
+    <string name="chip_espanol">Español</string>
+    <string name="chip_ingles">English</string>
     <string name="label_version">Versión %1$s</string>
     <string name="desc_app">Calculadora de campo para operaciones de shotcrete: rendimiento de la bomba, dosis de aditivo/acelerante, verificación contra el display, posición del potenciómetro del dosificador y registro de aforos con fotografías.</string>
     <string name="credit_hecho_por">Hecho por Hans Barrera</string>

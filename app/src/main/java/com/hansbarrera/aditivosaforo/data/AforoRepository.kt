@@ -1,9 +1,11 @@
 package com.hansbarrera.aditivosaforo.data
 
 import android.content.Context
+import android.net.Uri
 import org.json.JSONObject
 import java.io.File
 import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 /**
@@ -101,7 +103,7 @@ class AforoRepository(private val context: Context) {
     fun exportZip(id: String): File {
         val record = load(id) ?: throw IllegalArgumentException("Registro no encontrado: $id")
         val exportDir = File(context.cacheDir, "exports").apply { mkdirs() }
-        val zipFile = File(exportDir, "$id.zip")
+        val zipFile = File(exportDir, nombreArchivoExport(record))
 
         ZipOutputStream(zipFile.outputStream()).use { zos ->
             zos.putNextEntry(ZipEntry("datos.json"))
@@ -118,5 +120,50 @@ class AforoRepository(private val context: Context) {
             }
         }
         return zipFile
+    }
+
+    /** Nombre de archivo legible para el .zip exportado: incluye el ID (con fecha) y el cliente. */
+    private fun nombreArchivoExport(record: AforoRecord): String {
+        val clienteSanitizado = record.cliente.trim()
+            .replace(Regex("[^A-Za-z0-9 _-]"), "")
+            .replace(Regex("\\s+"), "_")
+        val base = if (clienteSanitizado.isNotBlank()) "${record.id}_$clienteSanitizado" else record.id
+        return "$base.zip"
+    }
+
+    /**
+     * Importa un .zip exportado previamente (datos.json + fotos), colocando las
+     * fotos en la carpeta del registro y dejando los datos como borrador para
+     * que se pueda seguir editando desde "Nuevo registro".
+     */
+    fun importZip(uri: Uri): AforoRecord {
+        val entradas = mutableMapOf<String, ByteArray>()
+        val abierto = context.contentResolver.openInputStream(uri)
+            ?: throw IllegalArgumentException("No se pudo abrir el archivo")
+
+        abierto.use { input ->
+            ZipInputStream(input).use { zis ->
+                var entry = zis.nextEntry
+                while (entry != null) {
+                    if (!entry.isDirectory) {
+                        entradas[entry.name] = zis.readBytes()
+                    }
+                    zis.closeEntry()
+                    entry = zis.nextEntry
+                }
+            }
+        }
+
+        val datosBytes = entradas["datos.json"]
+            ?: throw IllegalArgumentException("El archivo no contiene datos.json")
+        val record = AforoRecord.fromJson(JSONObject(String(datosBytes)))
+
+        val dir = recordDir(record.id)
+        record.fotos.forEach { nombre ->
+            entradas[nombre]?.let { bytes -> File(dir, nombre).writeBytes(bytes) }
+        }
+
+        saveDraft(record)
+        return record
     }
 }

@@ -1,5 +1,6 @@
 package com.hansbarrera.aditivosaforo
 
+import android.content.res.Configuration
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -10,11 +11,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import java.util.Locale
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -54,9 +57,22 @@ private fun AppRoot() {
     val appState = remember { AppState(context) }
     val darkTheme = appState.temaOscuro.value ?: isSystemInDarkTheme()
 
-    AditivosAforoTheme(darkTheme = darkTheme) {
-        Surface(modifier = Modifier) {
-            AppNavigation(appState)
+    val idioma = appState.idioma.value
+    val contextoLocalizado = remember(idioma) {
+        if (idioma == null) {
+            context
+        } else {
+            val config = Configuration(context.resources.configuration)
+            config.setLocale(Locale(idioma))
+            context.createConfigurationContext(config)
+        }
+    }
+
+    CompositionLocalProvider(LocalContext provides contextoLocalizado) {
+        AditivosAforoTheme(darkTheme = darkTheme) {
+            Surface(modifier = Modifier) {
+                AppNavigation(appState)
+            }
         }
     }
 }

@@ -36,7 +36,6 @@ import com.hansbarrera.aditivosaforo.ui.components.toDoubleOrZero
 fun AditivoScreen(appState: AppState) {
     val resetKey = appState.formResetTrigger.value
     var rendimiento by rememberSaveable(resetKey) { mutableStateOf("") }
-    var dosisCemento by rememberSaveable(resetKey) { mutableStateOf("400") }
     var porcentajeAditivo by rememberSaveable(resetKey) { mutableStateOf("0.08") }
     var densidadAditivo by rememberSaveable(resetKey) { mutableStateOf(Presets.DENSIDAD_ADITIVO_DEFAULT.toString()) }
 
@@ -72,17 +71,17 @@ fun AditivoScreen(appState: AppState) {
             }
 
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField(stringResource(R.string.label_dosis_cemento), dosisCemento, { dosisCemento = it }, unit = "kg/m3", step = 5.0, decimals = 0)
+            NumberField(stringResource(R.string.label_dosis_cemento), appState.cementoKgM3.value, { appState.cementoKgM3.value = it }, unit = "kg/m3", step = 5.0, decimals = 0)
             Spacer(modifier = Modifier.padding(top = 8.dp))
             NumberField(stringResource(R.string.porcentaje_aditivo_label), porcentajeAditivo, { porcentajeAditivo = it }, unit = stringResource(R.string.unit_fraccion_008), step = 0.005, decimals = 3)
             Spacer(modifier = Modifier.padding(top = 8.dp))
             NumberField(stringResource(R.string.label_densidad_aditivo), densidadAditivo, { densidadAditivo = it }, unit = "kg/lt", step = 0.05, decimals = 2)
         }
 
-        val resultado = remember(rendimiento, dosisCemento, porcentajeAditivo, densidadAditivo) {
+        val resultado = remember(rendimiento, appState.cementoKgM3.value, porcentajeAditivo, densidadAditivo) {
             Formulas.dosisAditivo(
                 rendimientoM3Hr = rendimiento.toDoubleOrZero(),
-                dosisCementoKg = dosisCemento.toDoubleOrZero(),
+                dosisCementoKg = appState.cementoKgM3.value.toDoubleOrZero(),
                 porcentajeAditivo = porcentajeAditivo.toDoubleOrZero(),
                 densidadAditivo = densidadAditivo.toDoubleOrZero()
             )
@@ -90,9 +89,9 @@ fun AditivoScreen(appState: AppState) {
 
         // Registra automáticamente los datos ingresados, para que queden disponibles
         // en el informe aunque no se presione el botón "Usar estos resultados...".
-        LaunchedEffect(dosisCemento, porcentajeAditivo, densidadAditivo, resultado) {
+        LaunchedEffect(appState.cementoKgM3.value, porcentajeAditivo, densidadAditivo, resultado) {
             appState.registrarDatos(mapOf(
-                "Aditivo - Dosis de cemento (kg/m3)" to dosisCemento,
+                "Aditivo - Dosis de cemento (kg/m3)" to appState.cementoKgM3.value,
                 "Aditivo - Porcentaje de aditivo" to porcentajeAditivo,
                 "Aditivo - Densidad del aditivo (kg/lt)" to densidadAditivo,
                 "Aditivo - Kilos de aditivo requerido (kg/min)" to formatNumber(resultado.kilosAditivoKgMin, 1),
@@ -111,7 +110,7 @@ fun AditivoScreen(appState: AppState) {
                     appState.caudalAditivoLtsMin.value = resultado.litrosAditivoLtsMin
                     appState.porcentajeAditivoCalculado.value = porcentajeAditivo.toDoubleOrZero()
                     appState.registrarDatos(mapOf(
-                        "Aditivo - Dosis de cemento (kg/m3)" to dosisCemento,
+                        "Aditivo - Dosis de cemento (kg/m3)" to appState.cementoKgM3.value,
                         "Aditivo - Porcentaje de aditivo" to porcentajeAditivo,
                         "Aditivo - Densidad del aditivo (kg/lt)" to densidadAditivo,
                         "Aditivo - Kilos de aditivo requerido (kg/min)" to formatNumber(resultado.kilosAditivoKgMin, 1),

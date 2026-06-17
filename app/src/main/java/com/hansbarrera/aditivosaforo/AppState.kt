@@ -20,6 +20,12 @@ class AppState(context: Context) {
     /** Último porcentaje de aditivo calculado. */
     val porcentajeAditivoCalculado = mutableStateOf<Double?>(null)
 
+    /** Dosis de cemento (kg/m3), compartida entre Aditivo y Potenciómetro. */
+    val cementoKgM3 = mutableStateOf("400")
+
+    /** Idioma: null = seguir al sistema, "es" o "en" = forzar ese idioma. */
+    val idioma = mutableStateOf(prefs.getString("idioma", null))
+
     /**
      * Datos de entrada y resultados acumulados desde las distintas calculadoras
      * (clave legible -> valor), para incluir automáticamente en el registro de
@@ -65,6 +71,7 @@ class AppState(context: Context) {
         rendimientoM3Hr.value = null
         caudalAditivoLtsMin.value = null
         porcentajeAditivoCalculado.value = null
+        cementoKgM3.value = "400"
         formResetTrigger.value++
     }
 
@@ -81,5 +88,10 @@ class AppState(context: Context) {
             false -> 0
             null -> -1
         }).apply()
+    }
+
+    fun setIdioma(valor: String?) {
+        idioma.value = valor
+        prefs.edit().putString("idioma", valor).apply()
     }
 }

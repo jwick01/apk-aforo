@@ -65,6 +65,38 @@ fun AcercaDeScreen(appState: AppState) {
             }
         }
 
+        SectionCard(stringResource(R.string.section_idioma)) {
+            Text(
+                stringResource(R.string.desc_idioma),
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.padding(top = 8.dp))
+            val idiomaActual = appState.idioma.value
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FilterChip(
+                    selected = idiomaActual == null,
+                    onClick = { appState.setIdioma(null) },
+                    label = { Text(stringResource(R.string.chip_seguir_sistema)) },
+                    modifier = Modifier.weight(1f)
+                )
+                FilterChip(
+                    selected = idiomaActual == "es",
+                    onClick = { appState.setIdioma("es") },
+                    label = { Text(stringResource(R.string.chip_espanol)) },
+                    modifier = Modifier.weight(1f)
+                )
+                FilterChip(
+                    selected = idiomaActual == "en",
+                    onClick = { appState.setIdioma("en") },
+                    label = { Text(stringResource(R.string.chip_ingles)) },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
         SectionCard(stringResource(R.string.app_name)) {
             Text(stringResource(R.string.label_version, BuildConfig.VERSION_NAME), style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.padding(top = 8.dp))

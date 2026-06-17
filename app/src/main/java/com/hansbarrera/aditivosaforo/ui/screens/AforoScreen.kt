@@ -390,18 +390,6 @@ private fun NuevoRegistroTab(appState: AppState) {
         )
     }
 
-    SectionCard(stringResource(R.string.section_resultados_guardados)) {
-        val datos = appState.datosInforme.value
-        if (datos.isEmpty()) {
-            Text(
-                stringResource(R.string.msg_no_datos_guardados),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        } else {
-            ResultadosAgrupados(datos)
-        }
-    }
-
     SectionCard(stringResource(R.string.section_fotografias)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -529,7 +517,33 @@ private fun HistorialTab(appState: AppState, onEditar: () -> Unit) {
     val context = LocalContext.current
     val repository = remember { AforoRepository(context) }
     var registros by remember { mutableStateOf(repository.loadAll()) }
+    var mensajeImportar by remember { mutableStateOf<String?>(null) }
     val chooserCompartirRegistro = stringResource(R.string.chooser_compartir_registro)
+    val msgErrorImportar = stringResource(R.string.msg_error_importar)
+
+    val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            try {
+                val record = repository.importZip(uri)
+                appState.cargarRegistroParaEditar(record.resultados)
+                onEditar()
+            } catch (e: Exception) {
+                mensajeImportar = msgErrorImportar
+            }
+        }
+    }
+
+    OutlinedButton(
+        onClick = { importLauncher.launch(arrayOf("application/zip", "application/octet-stream")) },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(stringResource(R.string.btn_importar_informe))
+    }
+    mensajeImportar?.let {
+        Spacer(modifier = Modifier.padding(top = 8.dp))
+        Text(it, style = MaterialTheme.typography.bodyMedium)
+    }
+    Spacer(modifier = Modifier.padding(top = 12.dp))
 
     if (registros.isEmpty()) {
         Text(

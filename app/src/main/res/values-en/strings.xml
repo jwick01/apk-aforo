@@ -89,8 +89,6 @@
     <string name="label_numero_equipo">Equipment number</string>
     <string name="label_odometro">Odometer</string>
     <string name="label_observaciones">Remarks</string>
-    <string name="section_resultados_guardados">Saved results</string>
-    <string name="msg_no_datos_guardados">No saved data yet. Use the "Use this result..." or "Save this data..." buttons on the other tabs to bring them here.</string>
     <string name="section_fotografias">Photos</string>
     <string name="btn_tomar_foto">Take photo</string>
     <string name="btn_cargar_imagen">Load image</string>
@@ -113,6 +111,8 @@
     <string name="btn_elegir_fecha">📅 Pick date</string>
     <string name="msg_permiso_camara">Camera permission is needed to take photos.</string>
     <string name="msg_no_registros">No saved records yet. Create one in the "New record" tab.</string>
+    <string name="btn_importar_informe">Import report (.zip)</string>
+    <string name="msg_error_importar">Could not import the file. Make sure it's a .zip exported from this app.</string>
     <string name="historial_fecha">Date: %1$s</string>
     <string name="historial_cliente">Client: %1$s</string>
     <string name="historial_proyecto">Project or mine: %1$s</string>
@@ -133,6 +133,10 @@
     <string name="chip_seguir_sistema">Follow system</string>
     <string name="chip_claro">Light</string>
     <string name="chip_oscuro">Dark</string>
+    <string name="section_idioma">Language</string>
+    <string name="desc_idioma">Choose the app language.</string>
+    <string name="chip_espanol">Español</string>
+    <string name="chip_ingles">English</string>
     <string name="label_version">Version %1$s</string>
     <string name="desc_app">Field calculator for shotcrete operations: pump flow rate, additive/accelerator dosage, verification against the display, dosing pump potentiometer position, and survey records with photos.</string>
     <string name="credit_hecho_por">Made by Hans Barrera</string>

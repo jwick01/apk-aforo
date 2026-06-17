@@ -37,7 +37,6 @@ import com.hansbarrera.aditivosaforo.ui.components.toDoubleOrZero
 fun PotenciometroScreen(appState: AppState) {
     val resetKey = appState.formResetTrigger.value
     var rendimiento by rememberSaveable(resetKey) { mutableStateOf("") }
-    var cementoPorM3 by rememberSaveable(resetKey) { mutableStateOf("420") }
     var porcentajeAcelerante by rememberSaveable(resetKey) { mutableStateOf("0.08") }
     var objetivoManual by rememberSaveable(resetKey) { mutableStateOf("") }
 
@@ -77,24 +76,24 @@ fun PotenciometroScreen(appState: AppState) {
                 }
             }
             Spacer(modifier = Modifier.padding(top = 8.dp))
-            NumberField(stringResource(R.string.label_cemento_por_m3), cementoPorM3, { cementoPorM3 = it }, unit = "kg/m3", step = 5.0, decimals = 0)
+            NumberField(stringResource(R.string.label_cemento_por_m3), appState.cementoKgM3.value, { appState.cementoKgM3.value = it }, unit = "kg/m3", step = 5.0, decimals = 0)
             Spacer(modifier = Modifier.padding(top = 8.dp))
             NumberField(stringResource(R.string.label_porcentaje_acelerante_requerido), porcentajeAcelerante, { porcentajeAcelerante = it }, unit = stringResource(R.string.unit_fraccion_008), step = 0.005, decimals = 3)
         }
 
-        val aceleranteCalculado = remember(rendimiento, cementoPorM3, porcentajeAcelerante) {
+        val aceleranteCalculado = remember(rendimiento, appState.cementoKgM3.value, porcentajeAcelerante) {
             Formulas.aceleranteRequeridoKgMin(
                 rendimientoM3Hr = rendimiento.toDoubleOrZero(),
-                cementoKgM3 = cementoPorM3.toDoubleOrZero(),
+                cementoKgM3 = appState.cementoKgM3.value.toDoubleOrZero(),
                 porcentajeAceleranteRequerido = porcentajeAcelerante.toDoubleOrZero()
             )
         }
 
         // Registra automáticamente los datos ingresados, para que queden disponibles
         // en el informe aunque no se presione el botón "Usar este valor como objetivo...".
-        LaunchedEffect(cementoPorM3, porcentajeAcelerante, aceleranteCalculado) {
+        LaunchedEffect(appState.cementoKgM3.value, porcentajeAcelerante, aceleranteCalculado) {
             appState.registrarDatos(mapOf(
-                "Potenciómetro - Cantidad de cemento (kg/m3)" to cementoPorM3,
+                "Potenciómetro - Cantidad de cemento (kg/m3)" to appState.cementoKgM3.value,
                 "Potenciómetro - Porcentaje de acelerante requerido" to porcentajeAcelerante,
                 "Potenciómetro - Acelerante requerido (kg/min)" to formatNumber(aceleranteCalculado, 1)
             ))
@@ -107,7 +106,7 @@ fun PotenciometroScreen(appState: AppState) {
                 onClick = {
                     objetivoManual = formatNumber(aceleranteCalculado, 6)
                     appState.registrarDatos(mapOf(
-                        "Potenciómetro - Cantidad de cemento (kg/m3)" to cementoPorM3,
+                        "Potenciómetro - Cantidad de cemento (kg/m3)" to appState.cementoKgM3.value,
                         "Potenciómetro - Porcentaje de acelerante requerido" to porcentajeAcelerante,
                         "Potenciómetro - Acelerante requerido (kg/min)" to formatNumber(aceleranteCalculado, 1)
                     ))
