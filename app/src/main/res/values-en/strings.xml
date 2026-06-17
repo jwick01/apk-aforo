@@ -112,7 +112,7 @@
     <string name="msg_permiso_camara">Camera permission is needed to take photos.</string>
     <string name="msg_no_registros">No saved records yet. Create one in the "New record" tab.</string>
     <string name="btn_importar_informe">Import report (.zip)</string>
-    <string name="msg_error_importar">Could not import the file. Make sure it's a .zip exported from this app.</string>
+    <string name="msg_error_importar">Could not import the file. Make sure it\'s a .zip exported from this app.</string>
     <string name="historial_fecha">Date: %1$s</string>
     <string name="historial_cliente">Client: %1$s</string>
     <string name="historial_proyecto">Project or mine: %1$s</string>
