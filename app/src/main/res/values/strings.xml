@@ -125,6 +125,7 @@
     <string name="historial_observaciones">Observaciones: %1$s</string>
     <string name="historial_resultados">Resultados:</string>
     <string name="historial_fotos_count">%1$d foto(s)</string>
+    <string name="btn_editar">Editar</string>
     <string name="btn_exportar">Exportar</string>
     <string name="btn_eliminar">Eliminar</string>
 

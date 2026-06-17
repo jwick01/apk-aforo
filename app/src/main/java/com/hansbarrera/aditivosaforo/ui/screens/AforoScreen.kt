@@ -123,7 +123,7 @@ fun AforoScreen(appState: AppState) {
         if (tabIndex == 0) {
             NuevoRegistroTab(appState)
         } else {
-            HistorialTab()
+            HistorialTab(appState, onEditar = { tabIndex = 0 })
         }
     }
 }
@@ -133,21 +133,23 @@ fun AforoScreen(appState: AppState) {
 private fun NuevoRegistroTab(appState: AppState) {
     val context = LocalContext.current
     val repository = remember { AforoRepository(context) }
-    val draft = remember { repository.loadDraft() }
+    val resetKey = appState.formResetTrigger.value
+    val editKey = appState.editarRegistroTrigger.value
+    val draft = remember(resetKey, editKey) { repository.loadDraft() }
 
-    var recordId by rememberSaveable { mutableStateOf(draft?.id?.takeIf { it.isNotBlank() }) }
-    var fecha by rememberSaveable { mutableStateOf(draft?.fecha?.takeIf { it.isNotBlank() } ?: fechaDeHoy()) }
-    var cliente by rememberSaveable { mutableStateOf(draft?.cliente ?: "") }
-    var proyectoOMina by rememberSaveable { mutableStateOf(draft?.proyectoOMina ?: "") }
-    var lugarAforo by rememberSaveable { mutableStateOf(draft?.lugarAforo ?: "") }
-    var operador by rememberSaveable { mutableStateOf(draft?.operador ?: "") }
-    var numeroEquipo by rememberSaveable { mutableStateOf(draft?.numeroEquipo ?: "") }
-    var odometro by rememberSaveable { mutableStateOf(draft?.odometro ?: "") }
-    var observaciones by rememberSaveable { mutableStateOf(draft?.observaciones ?: "") }
+    var recordId by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.id?.takeIf { it.isNotBlank() }) }
+    var fecha by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.fecha?.takeIf { it.isNotBlank() } ?: fechaDeHoy()) }
+    var cliente by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.cliente ?: "") }
+    var proyectoOMina by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.proyectoOMina ?: "") }
+    var lugarAforo by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.lugarAforo ?: "") }
+    var operador by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.operador ?: "") }
+    var numeroEquipo by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.numeroEquipo ?: "") }
+    var odometro by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.odometro ?: "") }
+    var observaciones by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.observaciones ?: "") }
 
-    var fotos by rememberSaveable { mutableStateOf(draft?.fotos ?: emptyList()) }
-    var fotoNotas by rememberSaveable { mutableStateOf(draft?.fotoNotas ?: emptyMap()) }
-    var mensaje by rememberSaveable { mutableStateOf<String?>(null) }
+    var fotos by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.fotos ?: emptyList()) }
+    var fotoNotas by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.fotoNotas ?: emptyMap()) }
+    var mensaje by rememberSaveable(resetKey, editKey) { mutableStateOf<String?>(null) }
     var pendingCameraFile by remember { mutableStateOf<File?>(null) }
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
     var showConfirmReset by rememberSaveable { mutableStateOf(false) }
@@ -523,7 +525,7 @@ private fun NuevoRegistroTab(appState: AppState) {
 }
 
 @Composable
-private fun HistorialTab() {
+private fun HistorialTab(appState: AppState, onEditar: () -> Unit) {
     val context = LocalContext.current
     val repository = remember { AforoRepository(context) }
     var registros by remember { mutableStateOf(repository.loadAll()) }
@@ -581,6 +583,16 @@ private fun HistorialTab() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                OutlinedButton(
+                    onClick = {
+                        repository.saveDraft(record)
+                        appState.cargarRegistroParaEditar(record.resultados)
+                        onEditar()
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(stringResource(R.string.btn_editar))
+                }
                 OutlinedButton(
                     onClick = {
                         val zip = repository.exportZip(record.id)

@@ -40,6 +40,14 @@ fun AditivoScreen(appState: AppState) {
     var porcentajeAditivo by rememberSaveable(resetKey) { mutableStateOf("0.08") }
     var densidadAditivo by rememberSaveable(resetKey) { mutableStateOf(Presets.DENSIDAD_ADITIVO_DEFAULT.toString()) }
 
+    // Completa automáticamente el rendimiento si ya fue calculado en otra pestaña.
+    LaunchedEffect(appState.rendimientoM3Hr.value) {
+        val guardadoAuto = appState.rendimientoM3Hr.value
+        if (rendimiento.isBlank() && guardadoAuto != null) {
+            rendimiento = formatNumber(guardadoAuto, 6)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -40,6 +40,26 @@ fun VerificacionScreen(appState: AppState) {
     var porcentajeCalculado by rememberSaveable(resetKey) { mutableStateOf("") }
     var porcentajeDisplay by rememberSaveable(resetKey) { mutableStateOf("") }
 
+    // Completa automáticamente los valores calculados si ya fueron calculados en otra pestaña.
+    LaunchedEffect(appState.rendimientoM3Hr.value) {
+        val guardadoAuto = appState.rendimientoM3Hr.value
+        if (rendimientoCalculado.isBlank() && guardadoAuto != null) {
+            rendimientoCalculado = formatNumber(guardadoAuto, 6)
+        }
+    }
+    LaunchedEffect(appState.caudalAditivoLtsMin.value) {
+        val guardadoAuto = appState.caudalAditivoLtsMin.value
+        if (aditivoCalculado.isBlank() && guardadoAuto != null) {
+            aditivoCalculado = formatNumber(guardadoAuto, 6)
+        }
+    }
+    LaunchedEffect(appState.porcentajeAditivoCalculado.value) {
+        val guardadoAuto = appState.porcentajeAditivoCalculado.value
+        if (porcentajeCalculado.isBlank() && guardadoAuto != null) {
+            porcentajeCalculado = formatNumber(guardadoAuto, 6)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -41,6 +41,14 @@ fun PotenciometroScreen(appState: AppState) {
     var porcentajeAcelerante by rememberSaveable(resetKey) { mutableStateOf("0.08") }
     var objetivoManual by rememberSaveable(resetKey) { mutableStateOf("") }
 
+    // Completa automáticamente el rendimiento si ya fue calculado en otra pestaña.
+    LaunchedEffect(appState.rendimientoM3Hr.value) {
+        val guardadoAuto = appState.rendimientoM3Hr.value
+        if (rendimiento.isBlank() && guardadoAuto != null) {
+            rendimiento = formatNumber(guardadoAuto, 6)
+        }
+    }
+
     val filasPotenciometro = remember(resetKey) {
         Presets.tablaPotenciometroDefault.map {
             mutableStateOf(it.first.toString()) to mutableStateOf(it.second.toString())

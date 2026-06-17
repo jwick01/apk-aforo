@@ -43,6 +43,14 @@ class AppState(context: Context) {
      */
     val formResetTrigger = mutableStateOf(0)
 
+    /**
+     * Se incrementa cada vez que se carga un registro del historial para
+     * editarlo, forzando a la pestaña "Nuevo registro" a releer el borrador
+     * (que ya contiene los datos de ese registro) en lugar de mantener los
+     * campos que tenía cargados previamente.
+     */
+    val editarRegistroTrigger = mutableStateOf(0)
+
     fun registrarDatos(nuevos: Map<String, String>) {
         datosInforme.value = datosInforme.value + nuevos
     }
@@ -58,6 +66,12 @@ class AppState(context: Context) {
         caudalAditivoLtsMin.value = null
         porcentajeAditivoCalculado.value = null
         formResetTrigger.value++
+    }
+
+    /** Trae los resultados de un registro del historial y pide a "Nuevo registro" que cargue sus datos. */
+    fun cargarRegistroParaEditar(resultados: Map<String, String>) {
+        datosInforme.value = resultados
+        editarRegistroTrigger.value++
     }
 
     fun setTemaOscuro(valor: Boolean?) {
