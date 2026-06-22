@@ -642,9 +642,10 @@ private fun HistorialTab(appState: AppState, onEditar: () -> Unit) {
 @Composable
 private fun FotoThumbnail(file: File) {
     if (!file.exists()) return
-    val bitmap by produceState<Bitmap?>(initialValue = null, file.path, file.lastModified()) {
+    val bitmapState by produceState<Bitmap?>(initialValue = null, file.path, file.lastModified()) {
         value = withContext(Dispatchers.IO) { decodeSampledBitmap(file, 160) }
     }
+    val bitmap = bitmapState
     if (bitmap != null) {
         Image(
             bitmap = bitmap.asImageBitmap(),
