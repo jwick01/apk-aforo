@@ -2,6 +2,7 @@ package com.hansbarrera.aditivosaforo
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateOf
+import com.hansbarrera.aditivosaforo.ui.components.toDoubleOrZero
 
 /**
  * Estado compartido entre pantallas: resultados recientes para "traer" valores
@@ -75,9 +76,26 @@ class AppState(context: Context) {
         formResetTrigger.value++
     }
 
-    /** Trae los resultados de un registro del historial y pide a "Nuevo registro" que cargue sus datos. */
+    /**
+     * Trae los resultados de un registro del historial y pide a "Nuevo registro" y a las
+     * calculadoras que recarguen sus datos. Además de reemplazar [datosInforme], siembra los
+     * valores compartidos (rendimiento, caudal/porcentaje de aditivo, cemento) para que el
+     * mecanismo de "autocompletar si está vacío" de cada calculadora restaure los valores del
+     * registro en vez de quedarse en blanco y sobrescribirlos al guardar.
+     */
     fun cargarRegistroParaEditar(resultados: Map<String, String>) {
         datosInforme.value = resultados
+        resultados["Rendimiento de la bomba (m3/hr)"]?.toDoubleOrZero()?.takeIf { it > 0.0 }?.let {
+            rendimientoM3Hr.value = it
+        }
+        resultados["Aditivo - Litros de aditivo (lts/min)"]?.toDoubleOrZero()?.takeIf { it > 0.0 }?.let {
+            caudalAditivoLtsMin.value = it
+        }
+        resultados["Aditivo - Porcentaje de aditivo"]?.toDoubleOrZero()?.takeIf { it > 0.0 }?.let {
+            porcentajeAditivoCalculado.value = it
+        }
+        (resultados["Aditivo - Dosis de cemento (kg/m3)"] ?: resultados["Potenciómetro - Cantidad de cemento (kg/m3)"])
+            ?.let { cementoKgM3.value = it }
         editarRegistroTrigger.value++
     }
 

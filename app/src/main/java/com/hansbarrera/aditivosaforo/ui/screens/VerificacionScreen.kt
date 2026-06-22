@@ -33,12 +33,20 @@ import com.hansbarrera.aditivosaforo.ui.components.toDoubleOrZero
 @Composable
 fun VerificacionScreen(appState: AppState) {
     val resetKey = appState.formResetTrigger.value
-    var rendimientoCalculado by rememberSaveable(resetKey) { mutableStateOf("") }
-    var rendimientoDisplay by rememberSaveable(resetKey) { mutableStateOf("") }
-    var aditivoCalculado by rememberSaveable(resetKey) { mutableStateOf("") }
-    var aditivoDisplay by rememberSaveable(resetKey) { mutableStateOf("") }
-    var porcentajeCalculado by rememberSaveable(resetKey) { mutableStateOf("") }
-    var porcentajeDisplay by rememberSaveable(resetKey) { mutableStateOf("") }
+    val editKey = appState.editarRegistroTrigger.value
+    val datos = appState.datosInforme.value
+    var rendimientoCalculado by rememberSaveable(resetKey, editKey) { mutableStateOf("") }
+    var rendimientoDisplay by rememberSaveable(resetKey, editKey) {
+        mutableStateOf(datos["Verificación - Rendimiento según display (m3/hr)"] ?: "")
+    }
+    var aditivoCalculado by rememberSaveable(resetKey, editKey) { mutableStateOf("") }
+    var aditivoDisplay by rememberSaveable(resetKey, editKey) {
+        mutableStateOf(datos["Verificación - Aditivo según display (lts/min)"] ?: "")
+    }
+    var porcentajeCalculado by rememberSaveable(resetKey, editKey) { mutableStateOf("") }
+    var porcentajeDisplay by rememberSaveable(resetKey, editKey) {
+        mutableStateOf(datos["Verificación - Porcentaje según display"] ?: "")
+    }
 
     // Completa automáticamente los valores calculados si ya fueron calculados en otra pestaña.
     LaunchedEffect(appState.rendimientoM3Hr.value) {

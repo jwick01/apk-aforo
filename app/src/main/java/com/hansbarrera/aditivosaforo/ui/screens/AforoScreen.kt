@@ -38,9 +38,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
@@ -177,24 +180,23 @@ private fun NuevoRegistroTab(appState: AppState) {
             fotos.isEmpty() && appState.datosInforme.value.isEmpty()
 
         if (vacio) {
-            repository.clearDraft()
+            withContext(Dispatchers.IO) { repository.clearDraft() }
         } else {
-            repository.saveDraft(
-                AforoRecord(
-                    id = recordId ?: "",
-                    fecha = fecha,
-                    cliente = cliente,
-                    proyectoOMina = proyectoOMina,
-                    lugarAforo = lugarAforo,
-                    operador = operador,
-                    numeroEquipo = numeroEquipo,
-                    odometro = odometro,
-                    observaciones = observaciones,
-                    resultados = appState.datosInforme.value,
-                    fotos = fotos,
-                    fotoNotas = fotoNotas
-                )
+            val snapshot = AforoRecord(
+                id = recordId ?: "",
+                fecha = fecha,
+                cliente = cliente,
+                proyectoOMina = proyectoOMina,
+                lugarAforo = lugarAforo,
+                operador = operador,
+                numeroEquipo = numeroEquipo,
+                odometro = odometro,
+                observaciones = observaciones,
+                resultados = appState.datosInforme.value,
+                fotos = fotos,
+                fotoNotas = fotoNotas
             )
+            withContext(Dispatchers.IO) { repository.saveDraft(snapshot) }
         }
     }
 
@@ -640,7 +642,9 @@ private fun HistorialTab(appState: AppState, onEditar: () -> Unit) {
 @Composable
 private fun FotoThumbnail(file: File) {
     if (!file.exists()) return
-    val bitmap = remember(file.path, file.lastModified()) { decodeSampledBitmap(file, 160) }
+    val bitmap by produceState<Bitmap?>(initialValue = null, file.path, file.lastModified()) {
+        value = withContext(Dispatchers.IO) { decodeSampledBitmap(file, 160) }
+    }
     if (bitmap != null) {
         Image(
             bitmap = bitmap.asImageBitmap(),

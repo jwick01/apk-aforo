@@ -33,12 +33,28 @@ import com.hansbarrera.aditivosaforo.ui.components.SectionCard
 import com.hansbarrera.aditivosaforo.ui.components.formatNumber
 import com.hansbarrera.aditivosaforo.ui.components.toDoubleOrZero
 
+/** Reconstruye la tabla potenciómetro -> acelerante a partir del texto guardado en el informe. */
+private fun parseTablaPotenciometro(texto: String?): List<Pair<Double, Double>>? {
+    if (texto.isNullOrBlank()) return null
+    val filas = texto.split(";").mapNotNull { entrada ->
+        val match = Regex("(-?[0-9.,]+)\\s*->\\s*(-?[0-9.,]+)").find(entrada.trim()) ?: return@mapNotNull null
+        match.groupValues[1].toDoubleOrZero() to match.groupValues[2].toDoubleOrZero()
+    }
+    return filas.takeIf { it.isNotEmpty() }
+}
+
 @Composable
 fun PotenciometroScreen(appState: AppState) {
     val resetKey = appState.formResetTrigger.value
-    var rendimiento by rememberSaveable(resetKey) { mutableStateOf("") }
-    var porcentajeAcelerante by rememberSaveable(resetKey) { mutableStateOf("0.08") }
-    var objetivoManual by rememberSaveable(resetKey) { mutableStateOf("") }
+    val editKey = appState.editarRegistroTrigger.value
+    val datosGuardados = appState.datosInforme.value
+    var rendimiento by rememberSaveable(resetKey, editKey) { mutableStateOf("") }
+    var porcentajeAcelerante by rememberSaveable(resetKey, editKey) {
+        mutableStateOf(datosGuardados["Potenciómetro - Porcentaje de acelerante requerido"] ?: "0.08")
+    }
+    var objetivoManual by rememberSaveable(resetKey, editKey) {
+        mutableStateOf(datosGuardados["Potenciómetro - Acelerante objetivo (kg/min)"] ?: "")
+    }
 
     // Completa automáticamente el rendimiento si ya fue calculado en otra pestaña.
     LaunchedEffect(appState.rendimientoM3Hr.value) {
@@ -48,8 +64,9 @@ fun PotenciometroScreen(appState: AppState) {
         }
     }
 
-    val filasPotenciometro = remember(resetKey) {
-        Presets.tablaPotenciometroDefault.map {
+    val filasPotenciometro = remember(resetKey, editKey) {
+        val tabla = parseTablaPotenciometro(datosGuardados["Potenciómetro - Tabla de calibración"]) ?: Presets.tablaPotenciometroDefault
+        tabla.map {
             mutableStateOf(it.first.toString()) to mutableStateOf(it.second.toString())
         }
     }

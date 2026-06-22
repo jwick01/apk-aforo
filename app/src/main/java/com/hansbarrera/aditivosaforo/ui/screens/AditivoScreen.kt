@@ -35,9 +35,15 @@ import com.hansbarrera.aditivosaforo.ui.components.toDoubleOrZero
 @Composable
 fun AditivoScreen(appState: AppState) {
     val resetKey = appState.formResetTrigger.value
-    var rendimiento by rememberSaveable(resetKey) { mutableStateOf("") }
-    var porcentajeAditivo by rememberSaveable(resetKey) { mutableStateOf("0.08") }
-    var densidadAditivo by rememberSaveable(resetKey) { mutableStateOf(Presets.DENSIDAD_ADITIVO_DEFAULT.toString()) }
+    val editKey = appState.editarRegistroTrigger.value
+    val datos = appState.datosInforme.value
+    var rendimiento by rememberSaveable(resetKey, editKey) { mutableStateOf("") }
+    var porcentajeAditivo by rememberSaveable(resetKey, editKey) {
+        mutableStateOf(datos["Aditivo - Porcentaje de aditivo"] ?: "0.08")
+    }
+    var densidadAditivo by rememberSaveable(resetKey, editKey) {
+        mutableStateOf(datos["Aditivo - Densidad del aditivo (kg/lt)"] ?: Presets.DENSIDAD_ADITIVO_DEFAULT.toString())
+    }
 
     // Completa automáticamente el rendimiento si ya fue calculado en otra pestaña.
     LaunchedEffect(appState.rendimientoM3Hr.value) {

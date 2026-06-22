@@ -68,11 +68,23 @@ fun RendimientoScreen(appState: AppState) {
 @Composable
 private fun RendimientoPorEmboladas(appState: AppState) {
     val resetKey = appState.formResetTrigger.value
-    var presetIndex by rememberSaveable(resetKey) { mutableStateOf(2) } // Alpha 30 por defecto
+    val editKey = appState.editarRegistroTrigger.value
+    val datos = appState.datosInforme.value
+    var presetIndex by rememberSaveable(resetKey, editKey) {
+        val nombreGuardado = datos["Rendimiento (émboladas) - Equipo (tipo de bomba)"]
+        val indiceGuardado = nombreGuardado?.let { nombre -> Presets.bombas.indexOfFirst { it.nombre == nombre } }
+        mutableStateOf(indiceGuardado?.takeIf { it >= 0 } ?: 2) // Alpha 30 por defecto
+    }
 
-    var volumenCilindro by rememberSaveable(resetKey) { mutableStateOf(Presets.bombas[presetIndex].volumenCilindroLts.toString()) }
-    var emboladas by rememberSaveable(resetKey) { mutableStateOf("12") }
-    var factorLlenado by rememberSaveable(resetKey) { mutableStateOf(Presets.FACTOR_LLENADO_DEFAULT.toString()) }
+    var volumenCilindro by rememberSaveable(resetKey, editKey) {
+        mutableStateOf(datos["Rendimiento (émboladas) - Volumen cilindro (lts)"] ?: Presets.bombas[presetIndex].volumenCilindroLts.toString())
+    }
+    var emboladas by rememberSaveable(resetKey, editKey) {
+        mutableStateOf(datos["Rendimiento (émboladas) - Émboladas por minuto"] ?: "12")
+    }
+    var factorLlenado by rememberSaveable(resetKey, editKey) {
+        mutableStateOf(datos["Rendimiento (émboladas) - Factor de llenado"] ?: Presets.FACTOR_LLENADO_DEFAULT.toString())
+    }
 
     SectionCard(stringResource(R.string.section_datos_bomba)) {
         Text(stringResource(R.string.label_tipo_bomba), style = MaterialTheme.typography.labelLarge)
@@ -159,8 +171,14 @@ private fun RendimientoPorEmboladas(appState: AppState) {
 @Composable
 private fun RendimientoPorTiempoLlenado(appState: AppState) {
     val resetKey = appState.formResetTrigger.value
-    var tiempoLlenado by rememberSaveable(resetKey) { mutableStateOf("80") }
-    var volumenLlenado by rememberSaveable(resetKey) { mutableStateOf("0.2") }
+    val editKey = appState.editarRegistroTrigger.value
+    val datos = appState.datosInforme.value
+    var tiempoLlenado by rememberSaveable(resetKey, editKey) {
+        mutableStateOf(datos["Rendimiento (tiempo de llenado) - Tiempo de llenado (seg)"] ?: "80")
+    }
+    var volumenLlenado by rememberSaveable(resetKey, editKey) {
+        mutableStateOf(datos["Rendimiento (tiempo de llenado) - Volumen de llenado (m3)"] ?: "0.2")
+    }
 
     SectionCard(stringResource(R.string.section_datos_llenado)) {
         NumberField(stringResource(R.string.label_tiempo_llenado), tiempoLlenado, { tiempoLlenado = it }, unit = "seg", step = 1.0, decimals = 0)
