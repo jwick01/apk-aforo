@@ -156,7 +156,7 @@ class PdfExporter(private val context: Context) {
         writer.canvas.drawRoundRect(rect, 8f, 8f, borde)
 
         val etiquetaPaint = TextPaint().apply {
-            textSize = 9f; color = COLOR_TEXTO_SUAVE; isAntiAlias = true; textAlign = Paint.Align.CENTER
+            textSize = 9f; this.color = COLOR_TEXTO_SUAVE; isAntiAlias = true; textAlign = Paint.Align.CENTER
         }
         val veredictoPaint = TextPaint().apply {
             textSize = 14f; typeface = Typeface.DEFAULT_BOLD; this.color = color
