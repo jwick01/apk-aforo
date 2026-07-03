@@ -2,12 +2,47 @@
     <string name="app_name">Aditivos y Émboladas</string>
 
     <!-- Navegación -->
+    <string name="nav_inicio">Inicio</string>
     <string name="nav_rendimiento">Rendimiento</string>
     <string name="nav_aditivo">Aditivo</string>
     <string name="nav_verificacion">Verificación</string>
     <string name="nav_potenciometro">Potenciómetro</string>
     <string name="nav_aforo">Aforo</string>
+    <string name="nav_historial">Historial</string>
     <string name="nav_acerca">Acerca de</string>
+
+    <!-- Inicio y asistente guiado -->
+    <string name="title_historial">Historial de aforos</string>
+    <string name="title_guiado">Aforo guiado</string>
+    <string name="title_resumen">Resumen y guardar</string>
+    <string name="btn_nuevo_aforo_guiado">Nuevo aforo guiado</string>
+    <string name="btn_continuar_borrador">Continuar borrador</string>
+    <string name="label_calculadoras">Calculadoras</string>
+    <string name="label_ajustes">Ajustes y acerca de</string>
+    <string name="label_paso_de">Paso %1$d de %2$d</string>
+    <string name="btn_anterior">Anterior</string>
+    <string name="btn_siguiente">Siguiente</string>
+    <string name="btn_omitir">Omitir</string>
+    <string name="btn_finalizar">Finalizar</string>
+    <string name="msg_registro_guardado_guiado">Registro guardado: %1$s. Ya puedes exportarlo.</string>
+
+    <!-- Informe PDF -->
+    <string name="btn_exportar_pdf">Exportar PDF</string>
+    <string name="msg_generando_pdf">Generando PDF…</string>
+    <string name="msg_error_pdf">No se pudo generar el PDF.</string>
+    <string name="chooser_compartir_pdf">Compartir informe PDF</string>
+    <string name="section_datos_informe">Datos para el informe</string>
+    <string name="desc_datos_informe">Estos datos aparecen en el encabezado del informe PDF.</string>
+    <string name="label_tecnico">Técnico</string>
+    <string name="label_empresa">Empresa</string>
+    <string name="label_pdf_titulo">Informe de aforo</string>
+    <string name="label_pdf_tecnico">Técnico: %1$s</string>
+    <string name="label_pdf_empresa">Empresa: %1$s</string>
+    <string name="label_pdf_veredicto">Veredicto de verificación</string>
+    <string name="label_pdf_desviacion">Desviación: %1$s%%</string>
+    <string name="label_pdf_sin_verificacion">Sin datos de verificación</string>
+    <string name="label_pdf_fotos">Fotografías</string>
+    <string name="label_pdf_pagina">Página %1$d</string>
 
     <!-- Comunes -->
     <string name="result_title">Resultado</string>

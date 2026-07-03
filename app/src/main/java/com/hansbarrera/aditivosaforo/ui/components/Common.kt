@@ -3,6 +3,7 @@ package com.hansbarrera.aditivosaforo.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.hansbarrera.aditivosaforo.data.agruparResultados
 import java.util.Locale
 
 /** Convierte un texto introducido por el usuario (con coma o punto decimal) a Double. */
@@ -118,6 +120,16 @@ fun SectionCard(title: String, content: @Composable () -> Unit) {
             androidx.compose.foundation.layout.Spacer(modifier = Modifier.padding(top = 8.dp))
             content()
         }
+    }
+}
+
+/** Lista los resultados de un registro agrupados por sección ("Sección - Campo"). */
+@Composable
+fun ResultadosAgrupados(datos: Map<String, String>) {
+    agruparResultados(datos).forEach { (seccion, campos) ->
+        Text(seccion, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+        campos.forEach { (campo, valor) -> Text("  $campo: $valor") }
+        Spacer(modifier = Modifier.padding(top = 6.dp))
     }
 }
 

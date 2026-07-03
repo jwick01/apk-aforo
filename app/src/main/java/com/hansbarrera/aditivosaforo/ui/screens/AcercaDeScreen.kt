@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,6 +33,29 @@ fun AcercaDeScreen(appState: AppState) {
     ) {
         Text(stringResource(R.string.nav_acerca), style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.padding(top = 12.dp))
+
+        SectionCard(stringResource(R.string.section_datos_informe)) {
+            Text(
+                stringResource(R.string.desc_datos_informe),
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.padding(top = 8.dp))
+            OutlinedTextField(
+                value = appState.tecnico.value,
+                onValueChange = { appState.setTecnico(it) },
+                label = { Text(stringResource(R.string.label_tecnico)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.padding(top = 8.dp))
+            OutlinedTextField(
+                value = appState.empresa.value,
+                onValueChange = { appState.setEmpresa(it) },
+                label = { Text(stringResource(R.string.label_empresa)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         SectionCard(stringResource(R.string.section_apariencia)) {
             Text(

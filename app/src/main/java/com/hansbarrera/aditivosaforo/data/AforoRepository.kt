@@ -131,7 +131,7 @@ class AforoRepository(private val context: Context) {
     fun exportZip(id: String): File {
         val record = load(id) ?: throw IllegalArgumentException("Registro no encontrado: $id")
         val exportDir = File(context.cacheDir, "exports").apply { mkdirs() }
-        val zipFile = File(exportDir, nombreArchivoExport(record))
+        val zipFile = File(exportDir, nombreBaseExport(record) + ".zip")
 
         ZipOutputStream(zipFile.outputStream()).use { zos ->
             zos.putNextEntry(ZipEntry("datos.json"))
@@ -150,13 +150,12 @@ class AforoRepository(private val context: Context) {
         return zipFile
     }
 
-    /** Nombre de archivo legible para el .zip exportado: incluye el ID (con fecha) y el cliente. */
-    private fun nombreArchivoExport(record: AforoRecord): String {
+    /** Nombre base legible para los archivos exportados (.zip/.pdf): ID (con fecha) y cliente. */
+    fun nombreBaseExport(record: AforoRecord): String {
         val clienteSanitizado = record.cliente.trim()
             .replace(Regex("[^A-Za-z0-9 _-]"), "")
             .replace(Regex("\\s+"), "_")
-        val base = if (clienteSanitizado.isNotBlank()) "${record.id}_$clienteSanitizado" else record.id
-        return "$base.zip"
+        return if (clienteSanitizado.isNotBlank()) "${record.id}_$clienteSanitizado" else record.id
     }
 
     /** Nombre simple sin rutas: evita que una entrada del zip escriba fuera de su carpeta. */

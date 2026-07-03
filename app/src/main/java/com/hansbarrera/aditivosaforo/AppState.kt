@@ -27,6 +27,12 @@ class AppState(context: Context) {
     /** Idioma: null = seguir al sistema, "es" o "en" = forzar ese idioma. */
     val idioma = mutableStateOf(prefs.getString("idioma", null))
 
+    /** Nombre del técnico que aparece en el encabezado del informe PDF. */
+    val tecnico = mutableStateOf(prefs.getString("tecnico", "") ?: "")
+
+    /** Empresa que aparece en el encabezado del informe PDF. */
+    val empresa = mutableStateOf(prefs.getString("empresa", "") ?: "")
+
     /**
      * Datos de entrada y resultados acumulados desde las distintas calculadoras
      * (clave legible -> valor), para incluir automáticamente en el registro de
@@ -111,5 +117,15 @@ class AppState(context: Context) {
     fun setIdioma(valor: String?) {
         idioma.value = valor
         prefs.edit().putString("idioma", valor).apply()
+    }
+
+    fun setTecnico(valor: String) {
+        tecnico.value = valor
+        prefs.edit().putString("tecnico", valor).apply()
+    }
+
+    fun setEmpresa(valor: String) {
+        empresa.value = valor
+        prefs.edit().putString("empresa", valor).apply()
     }
 }

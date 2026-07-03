@@ -1,11 +1,46 @@
 <resources>
     <!-- Navigation -->
+    <string name="nav_inicio">Home</string>
     <string name="nav_rendimiento">Flow Rate</string>
     <string name="nav_aditivo">Additive</string>
     <string name="nav_verificacion">Verification</string>
     <string name="nav_potenciometro">Potentiometer</string>
     <string name="nav_aforo">Survey</string>
+    <string name="nav_historial">History</string>
     <string name="nav_acerca">About</string>
+
+    <!-- Home and guided wizard -->
+    <string name="title_historial">Survey history</string>
+    <string name="title_guiado">Guided survey</string>
+    <string name="title_resumen">Summary and save</string>
+    <string name="btn_nuevo_aforo_guiado">New guided survey</string>
+    <string name="btn_continuar_borrador">Resume draft</string>
+    <string name="label_calculadoras">Calculators</string>
+    <string name="label_ajustes">Settings and about</string>
+    <string name="label_paso_de">Step %1$d of %2$d</string>
+    <string name="btn_anterior">Back</string>
+    <string name="btn_siguiente">Next</string>
+    <string name="btn_omitir">Skip</string>
+    <string name="btn_finalizar">Finish</string>
+    <string name="msg_registro_guardado_guiado">Record saved: %1$s. You can now export it.</string>
+
+    <!-- PDF report -->
+    <string name="btn_exportar_pdf">Export PDF</string>
+    <string name="msg_generando_pdf">Generating PDF…</string>
+    <string name="msg_error_pdf">Could not generate the PDF.</string>
+    <string name="chooser_compartir_pdf">Share PDF report</string>
+    <string name="section_datos_informe">Report details</string>
+    <string name="desc_datos_informe">These details appear in the PDF report header.</string>
+    <string name="label_tecnico">Technician</string>
+    <string name="label_empresa">Company</string>
+    <string name="label_pdf_titulo">Survey report</string>
+    <string name="label_pdf_tecnico">Technician: %1$s</string>
+    <string name="label_pdf_empresa">Company: %1$s</string>
+    <string name="label_pdf_veredicto">Verification verdict</string>
+    <string name="label_pdf_desviacion">Deviation: %1$s%%</string>
+    <string name="label_pdf_sin_verificacion">No verification data</string>
+    <string name="label_pdf_fotos">Photographs</string>
+    <string name="label_pdf_pagina">Page %1$d</string>
 
     <!-- Common -->
     <string name="result_title">Result</string>

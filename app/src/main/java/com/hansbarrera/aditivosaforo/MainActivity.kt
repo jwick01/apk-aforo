@@ -26,6 +26,9 @@ import androidx.navigation.compose.rememberNavController
 import com.hansbarrera.aditivosaforo.ui.screens.AcercaDeScreen
 import com.hansbarrera.aditivosaforo.ui.screens.AditivoScreen
 import com.hansbarrera.aditivosaforo.ui.screens.AforoScreen
+import com.hansbarrera.aditivosaforo.ui.screens.GuiadoScreen
+import com.hansbarrera.aditivosaforo.ui.screens.HistorialScreen
+import com.hansbarrera.aditivosaforo.ui.screens.HomeScreen
 import com.hansbarrera.aditivosaforo.ui.screens.PotenciometroScreen
 import com.hansbarrera.aditivosaforo.ui.screens.RendimientoScreen
 import com.hansbarrera.aditivosaforo.ui.screens.VerificacionScreen
@@ -33,13 +36,12 @@ import com.hansbarrera.aditivosaforo.ui.theme.AditivosAforoTheme
 
 private data class Destino(val ruta: String, val etiqueta: Int, val emoji: String)
 
+// Barra inferior: Inicio, formulario libre e historial. Las calculadoras, el
+// asistente guiado y "Acerca de" se abren desde la pantalla de Inicio.
 private val destinos = listOf(
+    Destino("inicio", R.string.nav_inicio, "🏠"),
     Destino("aforo", R.string.nav_aforo, "📋"),
-    Destino("rendimiento", R.string.nav_rendimiento, "⚙"),
-    Destino("aditivo", R.string.nav_aditivo, "🧪"),
-    Destino("verificacion", R.string.nav_verificacion, "📊"),
-    Destino("potenciometro", R.string.nav_potenciometro, "🎛"),
-    Destino("acerca", R.string.nav_acerca, "ℹ")
+    Destino("historial", R.string.nav_historial, "🗂")
 )
 
 class MainActivity : ComponentActivity() {
@@ -106,16 +108,44 @@ private fun AppNavigation(appState: AppState) {
             }
         }
     ) { innerPadding ->
+        // Navegación a un ítem de la barra: conserva/restaura el estado de cada pestaña.
+        fun navegarABarra(ruta: String) {
+            navController.navigate(ruta) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+
         NavHost(
             navController = navController,
-            startDestination = "aforo",
+            startDestination = "inicio",
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable("inicio") {
+                HomeScreen(
+                    appState = appState,
+                    onNuevoGuiado = { navController.navigate("guiado") },
+                    onContinuarBorrador = { navegarABarra("aforo") },
+                    onNavigate = { ruta -> navController.navigate(ruta) },
+                    onAcerca = { navController.navigate("acerca") }
+                )
+            }
+            composable("aforo") { AforoScreen(appState) }
+            composable("historial") {
+                HistorialScreen(appState, onEditarRegistro = { navegarABarra("aforo") })
+            }
+            composable("guiado") {
+                GuiadoScreen(appState, onFinalizar = {
+                    navController.popBackStack("inicio", inclusive = false)
+                })
+            }
             composable("rendimiento") { RendimientoScreen(appState) }
             composable("aditivo") { AditivoScreen(appState) }
             composable("verificacion") { VerificacionScreen(appState) }
             composable("potenciometro") { PotenciometroScreen(appState) }
-            composable("aforo") { AforoScreen(appState) }
             composable("acerca") { AcercaDeScreen(appState) }
         }
     }
