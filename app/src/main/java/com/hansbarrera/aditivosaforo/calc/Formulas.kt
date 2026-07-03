@@ -18,13 +18,23 @@ data class AditivoResult(
 )
 
 /**
- * Resultado de las desviaciones frente a las lecturas del display del equipo.
+ * Unidad en la que la pantalla del equipo muestra el caudal de aditivo.
  */
-data class DesviacionResult(
-    val desviacionCaudalHormigon: Double,
-    val desviacionCaudalAditivo: Double,
-    val desviacionPorcentajeAditivo: Double
+enum class UnidadPantalla { LTS_MIN, LTS_HR, LTS_SEG }
+
+/**
+ * Resultado de convertir la lectura de pantalla a caudal normalizado y masa.
+ */
+data class ConversionPantallaResult(
+    val ltsMin: Double,
+    val kgMin: Double,
+    val kgSeg: Double
 )
+
+/**
+ * Nivel del veredicto de la verificación según la tolerancia elegida.
+ */
+enum class NivelVeredicto { OK, ADVERTENCIA, FUERA, SIN_DATOS }
 
 /**
  * Una fila de la tabla potenciómetro -> acelerante (kg/min).
@@ -88,25 +98,91 @@ object Formulas {
     /**
      * Desviación relativa entre un valor calculado y el valor leído en el display.
      * Excel: H15=((H7-L5)/L5) ; H16=((H12-L6)/L6) ; H17=((H10-L10)/L10)
+     * Devuelve NaN cuando el display es 0: la desviación no está definida y
+     * mostrar 0% haría parecer que el equipo coincide perfectamente.
      */
     fun desviacion(calculado: Double, display: Double): Double {
-        if (display == 0.0) return 0.0
+        if (display == 0.0) return Double.NaN
         return (calculado - display) / display
     }
 
-    fun desviaciones(
-        rendimientoCalculadoM3Hr: Double,
-        rendimientoDisplayM3Hr: Double,
-        caudalAditivoCalculadoLtsMin: Double,
-        aditivoDisplayLtsMin: Double,
-        porcentajeAditivoCalculado: Double,
-        porcentajeAditivoDisplay: Double
-    ): DesviacionResult {
-        return DesviacionResult(
-            desviacionCaudalHormigon = desviacion(rendimientoCalculadoM3Hr, rendimientoDisplayM3Hr),
-            desviacionCaudalAditivo = desviacion(caudalAditivoCalculadoLtsMin, aditivoDisplayLtsMin),
-            desviacionPorcentajeAditivo = desviacion(porcentajeAditivoCalculado, porcentajeAditivoDisplay)
-        )
+    /**
+     * Convierte la lectura de la pantalla del equipo a lts/min.
+     */
+    fun pantallaALtsMin(valor: Double, unidad: UnidadPantalla): Double = when (unidad) {
+        UnidadPantalla.LTS_MIN -> valor
+        UnidadPantalla.LTS_HR -> valor / 60.0
+        UnidadPantalla.LTS_SEG -> valor * 60.0
+    }
+
+    /**
+     * Convierte la lectura de pantalla (en cualquiera de sus unidades) a caudal
+     * normalizado (lts/min) y masa (kg/min y kg/s) usando la densidad del aditivo.
+     */
+    fun conversionPantalla(
+        valor: Double,
+        unidad: UnidadPantalla,
+        densidadKgLt: Double
+    ): ConversionPantallaResult {
+        if (!valor.isFinite() || valor <= 0.0 || !densidadKgLt.isFinite() || densidadKgLt <= 0.0) {
+            return ConversionPantallaResult(Double.NaN, Double.NaN, Double.NaN)
+        }
+        val ltsMin = pantallaALtsMin(valor, unidad)
+        val kgMin = ltsMin * densidadKgLt
+        return ConversionPantallaResult(ltsMin, kgMin, kgMin / 60.0)
+    }
+
+    /**
+     * Kilos que debería marcar la báscula tras recolectar durante [tiempoSeg] segundos.
+     */
+    fun kilosEsperados(kgSeg: Double, tiempoSeg: Double): Double {
+        if (!kgSeg.isFinite() || tiempoSeg <= 0.0) return Double.NaN
+        return kgSeg * tiempoSeg
+    }
+
+    /**
+     * Caudal real de aditivo (lts/min) a partir de lo recolectado en un tiempo dado.
+     * Si se pesó ([medidoEnKg]), la masa se convierte a litros con la densidad.
+     */
+    fun caudalRealAditivoLtsMin(
+        cantidad: Double,
+        tiempoSeg: Double,
+        medidoEnKg: Boolean,
+        densidadKgLt: Double
+    ): Double {
+        if (cantidad <= 0.0 || tiempoSeg <= 0.0) return Double.NaN
+        val litros = if (medidoEnKg) {
+            if (densidadKgLt <= 0.0) return Double.NaN
+            cantidad / densidadKgLt
+        } else {
+            cantidad
+        }
+        return litros * 60.0 / tiempoSeg
+    }
+
+    /**
+     * Desviación porcentual del valor comparado frente a la referencia.
+     * Devuelve NaN si falta la referencia (la desviación no está definida).
+     */
+    fun desviacionPct(referencia: Double, comparado: Double): Double {
+        if (!referencia.isFinite() || !comparado.isFinite() || referencia == 0.0) return Double.NaN
+        return (comparado - referencia) / referencia * 100.0
+    }
+
+    /**
+     * Clasifica la desviación: dentro de la tolerancia, moderada (hasta el doble)
+     * o fuera de tolerancia. SIN_DATOS cuando la desviación no está definida.
+     */
+    fun nivelVeredicto(desviacionPct: Double, toleranciaPct: Double): NivelVeredicto {
+        if (!desviacionPct.isFinite() || !toleranciaPct.isFinite() || toleranciaPct <= 0.0) {
+            return NivelVeredicto.SIN_DATOS
+        }
+        val abs = kotlin.math.abs(desviacionPct)
+        return when {
+            abs <= toleranciaPct -> NivelVeredicto.OK
+            abs <= toleranciaPct * 2.0 -> NivelVeredicto.ADVERTENCIA
+            else -> NivelVeredicto.FUERA
+        }
     }
 
     /**

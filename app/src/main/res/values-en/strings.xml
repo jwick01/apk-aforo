@@ -44,21 +44,57 @@
     <string name="btn_usar_resultados_verificacion">Use these results in Verification</string>
 
     <!-- Verification -->
-    <string name="title_verificacion">Verification against display</string>
-    <string name="section_caudal_hormigon">Concrete flow</string>
-    <string name="label_rendimiento_calculado">Calculated flow rate</string>
-    <string name="btn_usar_valor_guardado_m3hr">Use saved value (%1$s m3/hr)</string>
-    <string name="label_rendimiento_display">Flow rate per display</string>
-    <string name="section_caudal_aditivo">Additive flow</string>
-    <string name="label_caudal_aditivo_calculado">Calculated additive flow</string>
-    <string name="btn_usar_valor_guardado_ltsmin">Use saved value (%1$s lts/min)</string>
-    <string name="label_aditivo_display">Additive per display</string>
-    <string name="label_porcentaje_calculado">Calculated percentage</string>
-    <string name="btn_usar_valor_guardado">Use saved value (%1$s)</string>
-    <string name="unit_fraccion">fraction</string>
-    <string name="label_porcentaje_display">Percentage per display sample</string>
-    <string name="section_desviaciones">Deviations</string>
-    <string name="btn_guardar_datos_aforo">Save this data to the survey record</string>
+    <string name="title_verificacion">Survey verifier</string>
+    <string name="label_modo_didactico">Learning mode: show step-by-step formulas</string>
+    <string name="section_cronometro">Field stopwatch</string>
+    <string name="btn_crono_iniciar">▶ Start</string>
+    <string name="btn_crono_detener">■ Stop</string>
+    <string name="btn_crono_reiniciar">Reset</string>
+    <string name="desc_cronometro">Use it to time the container filling or the additive collection. When stopped, copy the time into the test with one tap.</string>
+    <string name="btn_usar_cronometro">Use stopwatch time</string>
+    <string name="section_caudal_real_hormigon">A · Actual concrete flow (fill time)</string>
+    <string name="label_volumen_recipiente">Container volume</string>
+    <string name="result_rendimiento_real">Actual flow rate</string>
+    <string name="section_conversor">Display → kilos converter (for weighing)</string>
+    <string name="label_valor_pantalla">Value shown on the display</string>
+    <string name="label_unidad_pantalla">Display unit</string>
+    <string name="result_masa_equivalente">Mass equivalent</string>
+    <string name="result_kilos_esperados">Expected kilos in %1$s s of collection</string>
+    <string name="desc_conversor">Uses the density entered below. Place the empty container on the scale and tare before collecting: if the scale reads those kilos at the end of the time, the display is telling the truth.</string>
+    <string name="section_caudal_real_aditivo">B · Actual additive flow (graduated cylinder or scale)</string>
+    <string name="chip_medi_volumen">Measured volume (L)</string>
+    <string name="chip_pese_kg">Weighed (kg)</string>
+    <string name="label_volumen_recolectado">Collected volume</string>
+    <string name="label_masa_pesada">Weighed mass (tared)</string>
+    <string name="label_tiempo_recoleccion">Collection time</string>
+    <string name="result_caudal_real_aditivo">Actual additive flow</string>
+    <string name="desc_probeta">Disconnect the additive line at the nozzle or use the purge port, collect in a graduated cylinder for 30–60 s, and record the volume.</string>
+    <string name="section_que_verificar">What do you want to verify?</string>
+    <string name="chip_modo_pantalla_hormigon">Display vs actual · Concrete</string>
+    <string name="chip_modo_pantalla_aditivo">Display vs actual · Additive</string>
+    <string name="chip_modo_teorico_hormigon">Actual vs theoretical · Concrete</string>
+    <string name="chip_modo_teorico_aditivo">Actual vs theoretical · Additive</string>
+    <string name="label_pantalla_hormigon">Concrete flow rate shown on the display</string>
+    <string name="label_pantalla_aditivo">Additive flow shown on the display</string>
+    <string name="label_tolerancia">Acceptance tolerance (±)</string>
+    <string name="ref_real_aforo">Actual measured (survey)</string>
+    <string name="ref_real_probeta">Actual measured (cylinder)</string>
+    <string name="ref_teorico_hormigon">Theoretical (Flow Rate calculator)</string>
+    <string name="ref_teorico_aditivo">Theoretical required (Additive calculator)</string>
+    <string name="cmp_pantalla">Equipment display</string>
+    <string name="label_desviacion">Deviation</string>
+    <string name="veredicto_ok">✓ WITHIN TOLERANCE — the compared value matches the reference (±%1$s%%).</string>
+    <string name="veredicto_warn">⚠ MODERATE DEVIATION — check calibration. Exceeds ±%1$s%% but does not double it.</string>
+    <string name="veredicto_bad">✗ OUT OF TOLERANCE — the equipment does NOT deliver what it shows. Requires survey/recalibration.</string>
+    <string name="veredicto_sin_datos">Missing data: complete the measurements in this tab (and the calculators if comparing against theoretical values).</string>
+    <string name="msg_falta_teorico_hormigon">No theoretical flow rate saved. Calculate it in the Flow Rate tab and press "Use this flow rate".</string>
+    <string name="msg_falta_teorico_aditivo">No theoretical additive flow saved. Calculate it in the Additive tab and press "Use these results".</string>
+    <string name="hint_aditivo_bajo">If the additive pump delivers less than indicated, check peristaltic hose wear, line pressure, and the RPM vs flow curve.</string>
+    <string name="didactico_hormigon">Actual flow rate = 3600 × volume ÷ time\n= 3600 × %1$s m3 ÷ %2$s s = %3$s m3/hr\n\n3600 is the number of seconds in an hour: if you filled %1$s m3 in %2$s s, this is what you would pump in one hour.</string>
+    <string name="didactico_conversor">Mass = flow × density = %1$s L/min × %2$s kg/L = %3$s kg/min\nPer second = %3$s ÷ 60 = %4$s kg/s\n\nDensity converts volume into mass: 1 liter of additive at %2$s g/cm3 weighs %2$s kg.</string>
+    <string name="didactico_probeta_volumen">Actual flow = volume × 60 ÷ time\n= %1$s L × 60 ÷ %2$s s = %3$s L/min\n\nIt is normalized to one minute to compare directly with the display and the theoretical value.</string>
+    <string name="didactico_probeta_peso">Volume = mass ÷ density = %1$s kg ÷ %2$s = %3$s L\nActual flow = %3$s L × 60 ÷ %4$s s = %5$s L/min\n\nThe scale measures mass; dividing by density converts it back to liters.</string>
+    <string name="didactico_veredicto">Deviation = (compared − reference) ÷ reference × 100\n= (%1$s − %2$s) ÷ %2$s × 100 = %3$s%%\n\nPositive: the compared value is above the reference. Negative: it delivers less than it says.</string>
 
     <!-- Potentiometer -->
     <string name="title_potenciometro">Potentiometer position</string>
@@ -113,6 +149,10 @@
     <string name="msg_no_registros">No saved records yet. Create one in the "New record" tab.</string>
     <string name="btn_importar_informe">Import report (.zip)</string>
     <string name="msg_error_importar">Could not import the file. Make sure it\'s a .zip exported from this app.</string>
+    <string name="msg_error_guardar">Could not save the record. Check storage space and try again; your data is still in the form.</string>
+    <string name="msg_error_exportar">Could not export the record.</string>
+    <string name="msg_exportando">Exporting…</string>
+    <string name="msg_cargando_registros">Loading records…</string>
     <string name="historial_fecha">Date: %1$s</string>
     <string name="historial_cliente">Client: %1$s</string>
     <string name="historial_proyecto">Project or mine: %1$s</string>

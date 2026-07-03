@@ -28,16 +28,39 @@ class AforoRepository(private val context: Context) {
     private val borradorFile: File
         get() = File(context.filesDir, "borrador_aforo.json")
 
+    /**
+     * Escribe primero a un archivo temporal y luego lo renombra, para que un
+     * cierre a mitad de escritura nunca deje un JSON truncado en la ruta final.
+     */
+    private fun writeTextAtomic(destino: File, texto: String) {
+        val temporal = File(destino.parentFile, destino.name + ".tmp")
+        temporal.writeText(texto)
+        if (!temporal.renameTo(destino)) {
+            destino.delete()
+            if (!temporal.renameTo(destino)) {
+                destino.writeText(texto)
+                temporal.delete()
+            }
+        }
+    }
+
     /** Guarda el formulario en curso como borrador, para no perderlo si se cierra la app. */
     fun saveDraft(record: AforoRecord) {
-        borradorFile.writeText(record.toJson().toString(2))
+        writeTextAtomic(borradorFile, record.toJson().toString(2))
     }
 
     /** Recupera el borrador guardado, si existe. */
     fun loadDraft(): AforoRecord? {
         val file = borradorFile
         if (!file.exists()) return null
-        return AforoRecord.fromJson(JSONObject(file.readText()))
+        return try {
+            AforoRecord.fromJson(JSONObject(file.readText()))
+        } catch (e: Exception) {
+            // Borrador corrupto (p. ej. app cerrada a mitad de escritura): se
+            // descarta para no bloquear el arranque de la app.
+            file.delete()
+            null
+        }
     }
 
     /** Elimina el borrador, por ejemplo tras guardar el registro definitivo. */
@@ -56,13 +79,18 @@ class AforoRepository(private val context: Context) {
     fun load(id: String): AforoRecord? {
         val file = datosFile(id)
         if (!file.exists()) return null
-        return AforoRecord.fromJson(JSONObject(file.readText()))
+        return try {
+            AforoRecord.fromJson(JSONObject(file.readText()))
+        } catch (e: Exception) {
+            // Registro corrupto: se omite en vez de hacer caer toda la lista.
+            null
+        }
     }
 
     fun loadAll(): List<AforoRecord> = listIds().mapNotNull { load(it) }
 
     fun save(record: AforoRecord) {
-        datosFile(record.id).writeText(record.toJson().toString(2))
+        writeTextAtomic(datosFile(record.id), record.toJson().toString(2))
     }
 
     fun delete(id: String) {
@@ -131,39 +159,64 @@ class AforoRepository(private val context: Context) {
         return "$base.zip"
     }
 
+    /** Nombre simple sin rutas: evita que una entrada del zip escriba fuera de su carpeta. */
+    private fun esNombreSeguro(nombre: String): Boolean {
+        return nombre.isNotBlank() &&
+            !nombre.contains('/') &&
+            !nombre.contains('\\') &&
+            !nombre.contains("..")
+    }
+
     /**
      * Importa un .zip exportado previamente (datos.json + fotos), colocando las
      * fotos en la carpeta del registro y dejando los datos como borrador para
      * que se pueda seguir editando desde "Nuevo registro".
+     *
+     * Las entradas se copian por streaming a una carpeta temporal (sin cargar
+     * todo el zip en memoria) y solo se aceptan nombres de archivo simples,
+     * para que un zip manipulado no pueda escribir fuera de su carpeta.
      */
     fun importZip(uri: Uri): AforoRecord {
-        val entradas = mutableMapOf<String, ByteArray>()
-        val abierto = context.contentResolver.openInputStream(uri)
-            ?: throw IllegalArgumentException("No se pudo abrir el archivo")
-
-        abierto.use { input ->
-            ZipInputStream(input).use { zis ->
-                var entry = zis.nextEntry
-                while (entry != null) {
-                    if (!entry.isDirectory) {
-                        entradas[entry.name] = zis.readBytes()
+        val tempDir = File(context.cacheDir, "import_tmp_${System.nanoTime()}").apply { mkdirs() }
+        try {
+            val abierto = context.contentResolver.openInputStream(uri)
+                ?: throw IllegalArgumentException("No se pudo abrir el archivo")
+            abierto.use { input ->
+                ZipInputStream(input).use { zis ->
+                    var entry = zis.nextEntry
+                    while (entry != null) {
+                        if (!entry.isDirectory && esNombreSeguro(entry.name)) {
+                            File(tempDir, entry.name).outputStream().use { salida ->
+                                zis.copyTo(salida)
+                            }
+                        }
+                        zis.closeEntry()
+                        entry = zis.nextEntry
                     }
-                    zis.closeEntry()
-                    entry = zis.nextEntry
                 }
             }
+
+            val datosImportados = File(tempDir, "datos.json")
+            if (!datosImportados.exists()) {
+                throw IllegalArgumentException("El archivo no contiene datos.json")
+            }
+            val record = AforoRecord.fromJson(JSONObject(datosImportados.readText()))
+            if (!esNombreSeguro(record.id)) {
+                throw IllegalArgumentException("ID de registro inválido: ${record.id}")
+            }
+
+            val dir = recordDir(record.id)
+            record.fotos.filter { esNombreSeguro(it) }.forEach { nombre ->
+                val origen = File(tempDir, nombre)
+                if (origen.exists()) {
+                    origen.copyTo(File(dir, nombre), overwrite = true)
+                }
+            }
+
+            saveDraft(record)
+            return record
+        } finally {
+            tempDir.deleteRecursively()
         }
-
-        val datosBytes = entradas["datos.json"]
-            ?: throw IllegalArgumentException("El archivo no contiene datos.json")
-        val record = AforoRecord.fromJson(JSONObject(String(datosBytes)))
-
-        val dir = recordDir(record.id)
-        record.fotos.forEach { nombre ->
-            entradas[nombre]?.let { bytes -> File(dir, nombre).writeBytes(bytes) }
-        }
-
-        saveDraft(record)
-        return record
     }
 }

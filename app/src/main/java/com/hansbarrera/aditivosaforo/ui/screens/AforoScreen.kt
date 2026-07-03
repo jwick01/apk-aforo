@@ -40,9 +40,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -153,13 +155,19 @@ private fun NuevoRegistroTab(appState: AppState) {
     var fotos by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.fotos ?: emptyList()) }
     var fotoNotas by rememberSaveable(resetKey, editKey) { mutableStateOf(draft?.fotoNotas ?: emptyMap()) }
     var mensaje by rememberSaveable(resetKey, editKey) { mutableStateOf<String?>(null) }
-    var pendingCameraFile by remember { mutableStateOf<File?>(null) }
+    // Solo la ruta (String) es Saveable: así la foto no se pierde si el sistema
+    // mata la app mientras la cámara está abierta en primer plano.
+    var pendingCameraPath by rememberSaveable { mutableStateOf<String?>(null) }
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
     var showConfirmReset by rememberSaveable { mutableStateOf(false) }
+    var exportando by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     val msgPermisoCamara = stringResource(R.string.msg_permiso_camara)
     val msgRegistroGuardado = stringResource(R.string.msg_registro_guardado)
     val msgGuardaAntesExportar = stringResource(R.string.msg_guarda_antes_exportar)
+    val msgErrorGuardar = stringResource(R.string.msg_error_guardar)
+    val msgErrorExportar = stringResource(R.string.msg_error_exportar)
     val chooserCompartirRegistro = stringResource(R.string.chooser_compartir_registro)
 
     // Restaura, al entrar a la pantalla, los datos de cálculo guardados en el borrador.
@@ -209,23 +217,23 @@ private fun NuevoRegistroTab(appState: AppState) {
     }
 
     val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { exito ->
-        val archivo = pendingCameraFile
+        val archivo = pendingCameraPath?.let { File(it) }
         if (exito && archivo != null) {
             fotos = fotos + archivo.name
         } else {
             archivo?.delete()
         }
-        pendingCameraFile = null
+        pendingCameraPath = null
     }
 
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { concedido ->
-        val archivo = pendingCameraFile
+        val archivo = pendingCameraPath?.let { File(it) }
         if (concedido && archivo != null) {
             val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", archivo)
             cameraLauncher.launch(uri)
         } else {
             archivo?.delete()
-            pendingCameraFile = null
+            pendingCameraPath = null
             if (!concedido) {
                 mensaje = msgPermisoCamara
             }
@@ -235,7 +243,7 @@ private fun NuevoRegistroTab(appState: AppState) {
     fun tomarFoto() {
         val id = idActual()
         val archivo = repository.nextPhotoFile(id)
-        pendingCameraFile = archivo
+        pendingCameraPath = archivo.absolutePath
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", archivo)
             cameraLauncher.launch(uri)
@@ -248,10 +256,22 @@ private fun NuevoRegistroTab(appState: AppState) {
         if (uri != null) {
             val id = idActual()
             val destino = repository.nextPhotoFile(id)
-            context.contentResolver.openInputStream(uri)?.use { input ->
-                destino.outputStream().use { output -> input.copyTo(output) }
+            scope.launch {
+                val copiada = try {
+                    withContext(Dispatchers.IO) {
+                        context.contentResolver.openInputStream(uri)?.use { input ->
+                            destino.outputStream().use { output -> input.copyTo(output) }
+                        } != null
+                    }
+                } catch (e: Exception) {
+                    false
+                }
+                if (copiada) {
+                    fotos = fotos + destino.name
+                } else {
+                    destino.delete()
+                }
             }
-            fotos = fotos + destino.name
         }
     }
 
@@ -460,25 +480,32 @@ private fun NuevoRegistroTab(appState: AppState) {
         Button(
             onClick = {
                 val id = idActual()
-                repository.save(
-                    AforoRecord(
-                        id = id,
-                        fecha = fecha,
-                        cliente = cliente,
-                        proyectoOMina = proyectoOMina,
-                        lugarAforo = lugarAforo,
-                        operador = operador,
-                        numeroEquipo = numeroEquipo,
-                        odometro = odometro,
-                        observaciones = observaciones,
-                        resultados = appState.datosInforme.value,
-                        fotos = fotos,
-                        fotoNotas = fotoNotas
-                    )
+                val snapshot = AforoRecord(
+                    id = id,
+                    fecha = fecha,
+                    cliente = cliente,
+                    proyectoOMina = proyectoOMina,
+                    lugarAforo = lugarAforo,
+                    operador = operador,
+                    numeroEquipo = numeroEquipo,
+                    odometro = odometro,
+                    observaciones = observaciones,
+                    resultados = appState.datosInforme.value,
+                    fotos = fotos,
+                    fotoNotas = fotoNotas
                 )
-                appState.limpiarDatosInforme()
-                repository.clearDraft()
-                mensaje = String.format(msgRegistroGuardado, id)
+                scope.launch {
+                    try {
+                        withContext(Dispatchers.IO) { repository.save(snapshot) }
+                        // Solo tras un guardado exitoso se limpia el informe y el
+                        // borrador; si falló, los datos siguen en el formulario.
+                        appState.limpiarDatosInforme()
+                        withContext(Dispatchers.IO) { repository.clearDraft() }
+                        mensaje = String.format(msgRegistroGuardado, id)
+                    } catch (e: Exception) {
+                        mensaje = msgErrorGuardar
+                    }
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -487,24 +514,34 @@ private fun NuevoRegistroTab(appState: AppState) {
 
         Spacer(modifier = Modifier.padding(top = 8.dp))
         OutlinedButton(
+            enabled = !exportando,
             onClick = {
                 val id = recordId
                 if (id == null) {
                     mensaje = msgGuardaAntesExportar
                 } else {
-                    val zip = repository.exportZip(id)
-                    val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", zip)
-                    val intent = Intent(Intent.ACTION_SEND).apply {
-                        type = "application/zip"
-                        putExtra(Intent.EXTRA_STREAM, uri)
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    exportando = true
+                    scope.launch {
+                        try {
+                            val zip = withContext(Dispatchers.IO) { repository.exportZip(id) }
+                            val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", zip)
+                            val intent = Intent(Intent.ACTION_SEND).apply {
+                                type = "application/zip"
+                                putExtra(Intent.EXTRA_STREAM, uri)
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            }
+                            context.startActivity(Intent.createChooser(intent, chooserCompartirRegistro))
+                        } catch (e: Exception) {
+                            mensaje = msgErrorExportar
+                        } finally {
+                            exportando = false
+                        }
                     }
-                    context.startActivity(Intent.createChooser(intent, chooserCompartirRegistro))
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(stringResource(R.string.btn_exportar_compartir))
+            Text(stringResource(if (exportando) R.string.msg_exportando else R.string.btn_exportar_compartir))
         }
 
         mensaje?.let {
@@ -518,19 +555,31 @@ private fun NuevoRegistroTab(appState: AppState) {
 private fun HistorialTab(appState: AppState, onEditar: () -> Unit) {
     val context = LocalContext.current
     val repository = remember { AforoRepository(context) }
-    var registros by remember { mutableStateOf(repository.loadAll()) }
+    // null = cargando; la lectura de todos los registros se hace fuera del hilo principal.
+    var registros by remember { mutableStateOf<List<AforoRecord>?>(null) }
+    var reloadKey by remember { mutableStateOf(0) }
     var mensajeImportar by remember { mutableStateOf<String?>(null) }
+    var exportandoId by remember { mutableStateOf<String?>(null) }
+    val scope = rememberCoroutineScope()
     val chooserCompartirRegistro = stringResource(R.string.chooser_compartir_registro)
     val msgErrorImportar = stringResource(R.string.msg_error_importar)
+    val msgErrorExportar = stringResource(R.string.msg_error_exportar)
+
+    LaunchedEffect(reloadKey) {
+        registros = withContext(Dispatchers.IO) { repository.loadAll() }
+    }
 
     val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
-            try {
-                val record = repository.importZip(uri)
-                appState.cargarRegistroParaEditar(record.resultados)
-                onEditar()
-            } catch (e: Exception) {
-                mensajeImportar = msgErrorImportar
+            scope.launch {
+                try {
+                    val record = withContext(Dispatchers.IO) { repository.importZip(uri) }
+                    appState.cargarRegistroParaEditar(record.resultados)
+                    reloadKey++
+                    onEditar()
+                } catch (e: Exception) {
+                    mensajeImportar = msgErrorImportar
+                }
             }
         }
     }
@@ -547,7 +596,15 @@ private fun HistorialTab(appState: AppState, onEditar: () -> Unit) {
     }
     Spacer(modifier = Modifier.padding(top = 12.dp))
 
-    if (registros.isEmpty()) {
+    val lista = registros
+    if (lista == null) {
+        Text(
+            stringResource(R.string.msg_cargando_registros),
+            style = MaterialTheme.typography.bodyMedium
+        )
+        return
+    }
+    if (lista.isEmpty()) {
         Text(
             stringResource(R.string.msg_no_registros),
             style = MaterialTheme.typography.bodyMedium
@@ -555,7 +612,7 @@ private fun HistorialTab(appState: AppState, onEditar: () -> Unit) {
         return
     }
 
-    registros.forEach { record ->
+    lista.forEach { record ->
         SectionCard(record.id) {
             Text(stringResource(R.string.historial_fecha, record.fecha))
             Text(stringResource(R.string.historial_cliente, record.cliente))
@@ -601,33 +658,47 @@ private fun HistorialTab(appState: AppState, onEditar: () -> Unit) {
             ) {
                 OutlinedButton(
                     onClick = {
-                        repository.saveDraft(record)
-                        appState.cargarRegistroParaEditar(record.resultados)
-                        onEditar()
+                        scope.launch {
+                            withContext(Dispatchers.IO) { repository.saveDraft(record) }
+                            appState.cargarRegistroParaEditar(record.resultados)
+                            onEditar()
+                        }
                     },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(stringResource(R.string.btn_editar))
                 }
                 OutlinedButton(
+                    enabled = exportandoId == null,
                     onClick = {
-                        val zip = repository.exportZip(record.id)
-                        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", zip)
-                        val intent = Intent(Intent.ACTION_SEND).apply {
-                            type = "application/zip"
-                            putExtra(Intent.EXTRA_STREAM, uri)
-                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        exportandoId = record.id
+                        scope.launch {
+                            try {
+                                val zip = withContext(Dispatchers.IO) { repository.exportZip(record.id) }
+                                val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", zip)
+                                val intent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "application/zip"
+                                    putExtra(Intent.EXTRA_STREAM, uri)
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                context.startActivity(Intent.createChooser(intent, chooserCompartirRegistro))
+                            } catch (e: Exception) {
+                                mensajeImportar = msgErrorExportar
+                            } finally {
+                                exportandoId = null
+                            }
                         }
-                        context.startActivity(Intent.createChooser(intent, chooserCompartirRegistro))
                     },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text(stringResource(R.string.btn_exportar))
+                    Text(stringResource(if (exportandoId == record.id) R.string.msg_exportando else R.string.btn_exportar))
                 }
                 OutlinedButton(
                     onClick = {
-                        repository.delete(record.id)
-                        registros = repository.loadAll()
+                        scope.launch {
+                            withContext(Dispatchers.IO) { repository.delete(record.id) }
+                            reloadKey++
+                        }
                     },
                     modifier = Modifier.weight(1f)
                 ) {

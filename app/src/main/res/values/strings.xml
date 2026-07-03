@@ -46,21 +46,57 @@
     <string name="btn_usar_resultados_verificacion">Usar estos resultados en Verificación</string>
 
     <!-- Verificación -->
-    <string name="title_verificacion">Verificación contra el display</string>
-    <string name="section_caudal_hormigon">Caudal de hormigón</string>
-    <string name="label_rendimiento_calculado">Rendimiento calculado</string>
-    <string name="btn_usar_valor_guardado_m3hr">Usar valor guardado (%1$s m3/hr)</string>
-    <string name="label_rendimiento_display">Rendimiento según display</string>
-    <string name="section_caudal_aditivo">Caudal de aditivo</string>
-    <string name="label_caudal_aditivo_calculado">Caudal de aditivo calculado</string>
-    <string name="btn_usar_valor_guardado_ltsmin">Usar valor guardado (%1$s lts/min)</string>
-    <string name="label_aditivo_display">Aditivo según display</string>
-    <string name="label_porcentaje_calculado">Porcentaje calculado</string>
-    <string name="btn_usar_valor_guardado">Usar valor guardado (%1$s)</string>
-    <string name="unit_fraccion">fracción</string>
-    <string name="label_porcentaje_display">Porcentaje según muestra del display</string>
-    <string name="section_desviaciones">Desviaciones</string>
-    <string name="btn_guardar_datos_aforo">Guardar estos datos en el registro de aforo</string>
+    <string name="title_verificacion">Verificador de aforo</string>
+    <string name="label_modo_didactico">Modo didáctico: ver fórmulas paso a paso</string>
+    <string name="section_cronometro">Cronómetro de terreno</string>
+    <string name="btn_crono_iniciar">▶ Iniciar</string>
+    <string name="btn_crono_detener">■ Detener</string>
+    <string name="btn_crono_reiniciar">Reiniciar</string>
+    <string name="desc_cronometro">Úsalo para cronometrar el llenado del recipiente o la recolección de aditivo. Al detener, copia el tiempo a la prueba con un toque.</string>
+    <string name="btn_usar_cronometro">Usar tiempo del cronómetro</string>
+    <string name="section_caudal_real_hormigon">A · Caudal real de hormigón (tiempo de llenado)</string>
+    <string name="label_volumen_recipiente">Volumen del recipiente</string>
+    <string name="result_rendimiento_real">Rendimiento real</string>
+    <string name="section_conversor">Conversor pantalla → kilos (para pesar)</string>
+    <string name="label_valor_pantalla">Valor que indica la pantalla</string>
+    <string name="label_unidad_pantalla">Unidad de la pantalla</string>
+    <string name="result_masa_equivalente">Equivale en masa</string>
+    <string name="result_kilos_esperados">Kilos esperados en %1$s s de recolección</string>
+    <string name="desc_conversor">Usa la densidad ingresada abajo. Pon el recipiente vacío en la báscula y tara antes de recolectar: si la báscula marca esos kilos al final del tiempo, la pantalla dice la verdad.</string>
+    <string name="section_caudal_real_aditivo">B · Caudal real de aditivo (probeta o báscula)</string>
+    <string name="chip_medi_volumen">Medí volumen (L)</string>
+    <string name="chip_pese_kg">Pesé (kg)</string>
+    <string name="label_volumen_recolectado">Volumen recolectado</string>
+    <string name="label_masa_pesada">Masa pesada (con tara)</string>
+    <string name="label_tiempo_recoleccion">Tiempo de recolección</string>
+    <string name="result_caudal_real_aditivo">Caudal real de aditivo</string>
+    <string name="desc_probeta">Desconecta la línea de aditivo en la boquilla o usa el puerto de purga, recolecta en probeta graduada durante 30–60 s y registra el volumen.</string>
+    <string name="section_que_verificar">¿Qué quieres verificar?</string>
+    <string name="chip_modo_pantalla_hormigon">Pantalla vs real · Hormigón</string>
+    <string name="chip_modo_pantalla_aditivo">Pantalla vs real · Aditivo</string>
+    <string name="chip_modo_teorico_hormigon">Real vs teórico · Hormigón</string>
+    <string name="chip_modo_teorico_aditivo">Real vs teórico · Aditivo</string>
+    <string name="label_pantalla_hormigon">Rendimiento de hormigón que indica la pantalla</string>
+    <string name="label_pantalla_aditivo">Caudal de aditivo que indica la pantalla</string>
+    <string name="label_tolerancia">Tolerancia de aceptación (±)</string>
+    <string name="ref_real_aforo">Real medido (aforo)</string>
+    <string name="ref_real_probeta">Real medido (probeta)</string>
+    <string name="ref_teorico_hormigon">Teórico (calculadora Rendimiento)</string>
+    <string name="ref_teorico_aditivo">Teórico requerido (calculadora Aditivo)</string>
+    <string name="cmp_pantalla">Pantalla del equipo</string>
+    <string name="label_desviacion">Desviación</string>
+    <string name="veredicto_ok">✓ DENTRO DE TOLERANCIA — el valor comparado coincide con la referencia (±%1$s%%).</string>
+    <string name="veredicto_warn">⚠ DESVIACIÓN MODERADA — revisar calibración. Excede ±%1$s%% pero no la duplica.</string>
+    <string name="veredicto_bad">✗ FUERA DE TOLERANCIA — el equipo NO entrega lo que indica. Requiere aforo/recalibración.</string>
+    <string name="veredicto_sin_datos">Faltan datos: completa las mediciones de esta pestaña (y las calculadoras si comparas contra el teórico).</string>
+    <string name="msg_falta_teorico_hormigon">No hay rendimiento teórico guardado. Calcúlalo en la pestaña Rendimiento y presiona "Usar este rendimiento".</string>
+    <string name="msg_falta_teorico_aditivo">No hay caudal de aditivo teórico guardado. Calcúlalo en la pestaña Aditivo y presiona "Usar estos resultados".</string>
+    <string name="hint_aditivo_bajo">Si la bomba de aditivo entrega menos de lo indicado, revisa desgaste de la manguera peristáltica, presión de línea y curva RPM vs caudal.</string>
+    <string name="didactico_hormigon">Rendimiento real = 3600 × volumen ÷ tiempo\n= 3600 × %1$s m3 ÷ %2$s s = %3$s m3/hr\n\n3600 son los segundos de una hora: si llenaste %1$s m3 en %2$s s, en una hora bombearías esto.</string>
+    <string name="didactico_conversor">Masa = caudal × densidad = %1$s L/min × %2$s kg/L = %3$s kg/min\nPor segundo = %3$s ÷ 60 = %4$s kg/s\n\nLa densidad convierte volumen en masa: 1 litro de aditivo a %2$s g/cm3 pesa %2$s kg.</string>
+    <string name="didactico_probeta_volumen">Caudal real = volumen × 60 ÷ tiempo\n= %1$s L × 60 ÷ %2$s s = %3$s L/min\n\nSe normaliza a un minuto para comparar directo con la pantalla y con el teórico.</string>
+    <string name="didactico_probeta_peso">Volumen = masa ÷ densidad = %1$s kg ÷ %2$s = %3$s L\nCaudal real = %3$s L × 60 ÷ %4$s s = %5$s L/min\n\nLa báscula mide masa; se divide por la densidad para volver a litros.</string>
+    <string name="didactico_veredicto">Desviación = (comparado − referencia) ÷ referencia × 100\n= (%1$s − %2$s) ÷ %2$s × 100 = %3$s%%\n\nPositivo: el comparado está por encima de la referencia. Negativo: entrega menos de lo que dice.</string>
 
     <!-- Potenciómetro -->
     <string name="title_potenciometro">Posición del potenciómetro</string>
@@ -115,6 +151,10 @@
     <string name="msg_no_registros">Aún no hay registros guardados. Crea uno en la pestaña "Nuevo registro".</string>
     <string name="btn_importar_informe">Importar informe (.zip)</string>
     <string name="msg_error_importar">No se pudo importar el archivo. Verifica que sea un .zip exportado desde esta app.</string>
+    <string name="msg_error_guardar">No se pudo guardar el registro. Revisa el espacio de almacenamiento e inténtalo de nuevo; los datos siguen en el formulario.</string>
+    <string name="msg_error_exportar">No se pudo exportar el registro.</string>
+    <string name="msg_exportando">Exportando…</string>
+    <string name="msg_cargando_registros">Cargando registros…</string>
     <string name="historial_fecha">Fecha: %1$s</string>
     <string name="historial_cliente">Cliente: %1$s</string>
     <string name="historial_proyecto">Proyecto o mina: %1$s</string>
