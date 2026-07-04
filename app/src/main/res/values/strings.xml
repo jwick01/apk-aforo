@@ -25,6 +25,9 @@
     <string name="btn_omitir">Omitir</string>
     <string name="btn_finalizar">Finalizar</string>
     <string name="msg_registro_guardado_guiado">Registro guardado: %1$s. Ya puedes exportarlo.</string>
+    <string name="btn_salir_guiado">Salir</string>
+    <string name="dialog_salir_guiado_titulo">¿Salir del aforo guiado?</string>
+    <string name="dialog_salir_guiado_mensaje">Tu avance queda guardado como borrador; puedes continuarlo desde Inicio con "Continuar borrador".</string>
 
     <!-- Informe PDF -->
     <string name="btn_exportar_pdf">Exportar PDF</string>

@@ -127,7 +127,9 @@ private fun AppNavigation(appState: AppState) {
             composable("inicio") {
                 HomeScreen(
                     appState = appState,
-                    onNuevoGuiado = { navController.navigate("guiado") },
+                    onNuevoGuiado = {
+                        navController.navigate("guiado") { launchSingleTop = true }
+                    },
                     onContinuarBorrador = { navegarABarra("aforo") },
                     onNavigate = { ruta -> navController.navigate(ruta) },
                     onAcerca = { navController.navigate("acerca") }

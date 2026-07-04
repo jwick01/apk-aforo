@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -27,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -66,6 +69,7 @@ fun GuiadoScreen(appState: AppState, onFinalizar: () -> Unit) {
     var registroGuardado by remember { mutableStateOf<AforoRecord?>(null) }
     var exportando by remember { mutableStateOf(false) }
     var exportandoPdf by remember { mutableStateOf(false) }
+    var showConfirmSalir by rememberSaveable { mutableStateOf(false) }
 
     val msgErrorGuardar = stringResource(R.string.msg_error_guardar)
     val msgErrorExportar = stringResource(R.string.msg_error_exportar)
@@ -102,13 +106,47 @@ fun GuiadoScreen(appState: AppState, onFinalizar: () -> Unit) {
         context.startActivity(Intent.createChooser(intent, titulo))
     }
 
+    if (showConfirmSalir) {
+        AlertDialog(
+            onDismissRequest = { showConfirmSalir = false },
+            title = { Text(stringResource(R.string.dialog_salir_guiado_titulo)) },
+            text = { Text(stringResource(R.string.dialog_salir_guiado_mensaje)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showConfirmSalir = false
+                    onFinalizar()
+                }) {
+                    Text(stringResource(R.string.btn_salir_guiado))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirmSalir = false }) {
+                    Text(stringResource(R.string.btn_cancelar))
+                }
+            }
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(stringResource(R.string.title_guiado), style = MaterialTheme.typography.titleLarge)
-        Spacer(modifier = Modifier.padding(top = 8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                stringResource(R.string.title_guiado),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.weight(1f)
+            )
+            IconButton(onClick = {
+                // Con el registro ya guardado no hay nada que confirmar; antes de
+                // guardar se avisa que el avance queda como borrador.
+                if (guardadoId != null) onFinalizar() else showConfirmSalir = true
+            }) {
+                Text("✕", style = MaterialTheme.typography.titleLarge)
+            }
+        }
+        Spacer(modifier = Modifier.padding(top = 4.dp))
         LinearProgressIndicator(
             progress = { (paso + 1) / TOTAL_PASOS.toFloat() },
             modifier = Modifier.fillMaxWidth()
